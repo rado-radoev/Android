@@ -1,4 +1,4 @@
-package com.superlamer.demoappchallenge;
+package com.superlamer.btnclicker;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -7,8 +7,8 @@ import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
 
-    public void clickFunction(View view) {
-        Log.i("Info", "Button Pressed");
+    public void btnClick(View view) {
+        Log.i("Info", "Button 1 clicked");
     }
 
     @Override
