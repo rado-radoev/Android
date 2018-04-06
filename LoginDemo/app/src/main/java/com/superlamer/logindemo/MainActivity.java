@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -12,7 +13,7 @@ public class MainActivity extends AppCompatActivity {
         EditText userNameText = (EditText) findViewById(R.id.userNameField);
         EditText passwordText = (EditText) findViewById(R.id.passwordField);
 
-
+        Toast.makeText(MainActivity.this, "Hii" , Toast.LENGTH_LONG);
 
         Log.i("Info", String.format("%s %s", "UserName:", userNameText.getText().toString()));
         Log.i("Info", String.format("%s %s", "Password:", passwordText.getText().toString()));
