@@ -12,7 +12,9 @@ public class MainActivity extends AppCompatActivity {
     public void calculate(View view) {
         EditText userText = (EditText) findViewById(R.id.numberTextField);
 
-        int num = Integer.parseInt(userText.getText().toString());
+        try {
+            int num = Integer.parseInt(userText.getText().toString());
+        } catch (Exception e)
 
 
         if (isTriangular(num)) {
