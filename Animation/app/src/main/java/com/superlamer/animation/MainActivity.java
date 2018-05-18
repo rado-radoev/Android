@@ -6,15 +6,13 @@ import android.os.Bundle;
 import android.widget.ImageView;
 import android.view.View;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity {
 
     private ImageView bart;
-    private ImageView homer;
 
-    public void fade(ImageView imageToFade, ImageView imageToShow) {
-        imageToFade.animate().alpha(0f).setDuration(2000);
-        imageToShow.animate().alpha(1f).setDuration(2000);
-        imageToShow.bringToFront();
+    public void fade(View view) {
+
+        bart.animate().translationXBy(1000f).setDuration(2000);
     }
 
  @Override
@@ -22,21 +20,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        bart = (ImageView) findViewById(R.id.bart);
-        bart.setOnClickListener(this);
+         bart = (ImageView) findViewById(R.id.bart);
 
-        homer = (ImageView) findViewById(R.id.homer);
-        homer.setOnClickListener(this);
+         bart.setTranslationX(-1000f);
     }
 
-    @Override
-    public void onClick(View view) {
-        if (view.getId() == R.id.bart) {
-            fade(bart, homer);
-        }
-        else if (view.getId() == R.id.homer) {
-            fade(homer, bart);
-        }
-    }
 
 }
