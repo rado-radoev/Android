@@ -12,7 +12,14 @@ public class MainActivity extends AppCompatActivity {
 
     public void fade(View view) {
 
-        bart.animate().translationXBy(1000f).setDuration(2000);
+        bart = (ImageView) findViewById(R.id.bart);
+        bart.animate()
+                .translationXBy(100f)
+                .translationYBy(100f)
+                .rotation(360)
+                .scaleX(0.5f)
+                .scaleY(0.5f)
+                .setDuration(2000);
     }
 
  @Override
@@ -20,9 +27,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-         bart = (ImageView) findViewById(R.id.bart);
-
-         bart.setTranslationX(-1000f);
+//         bart = (ImageView) findViewById(R.id.bart);
+//
+//         bart.setTranslationX(-1000f);
     }
 
 
