@@ -31,9 +31,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private boolean isCellOccupied(int[] colRowToOccupy) {
-        int col = colRowToOccupy[0];
-        int row = colRowToOccupy[1];
+    private boolean isCellOccupied(int col, int row) {
         boolean occupied = false;
 
         if (gameState[col][row] == 1) {
@@ -43,12 +41,16 @@ public class MainActivity extends AppCompatActivity {
         return  occupied;
     }
 
-    private void placeAnItem(ImageView item) {
+    private boolean placeAnItem(ImageView item) {
+        boolean successful = false;
         int[] colRow = getSelectedIndex(item.getTag().toString());
 
-        if (!isCellOccupied(colRow)) {
+        if (!isCellOccupied(colRow[0],colRow[1])) {
             occupyIndex(colRow);
+            successful = true;
         }
+
+        return successful;
     }
 
     private int[] getSelectedIndex(String tag) {
@@ -59,11 +61,12 @@ public class MainActivity extends AppCompatActivity {
         Pattern pattern = Pattern.compile(regexPattern);
         Matcher matcher = pattern.matcher(tag);
 
-        int col = Integer.valueOf(matcher.group(1));
-        int row = Integer.valueOf(matcher.group(2));
-
-        colRow[0] = col;
-        colRow[1] = row;
+        int count = 0;
+        while (matcher.find()) {
+            count++;
+            colRow[count - 1] = Integer.valueOf(tag.substring(matcher.start(),matcher.end()));
+            tag.substring(matcher.start(),matcher.end());
+        }
 
         return colRow;
     }
@@ -73,20 +76,24 @@ public class MainActivity extends AppCompatActivity {
         initializeGameState();
 
         counter.setTranslationY(-1000f);
-        System.out.println(counter.getTag());
 
         if (activePlayer == 0) {
             counter.setImageResource(R.drawable.yellow);
-            placeAnItem(counter);
-            activePlayer = 1;
+            if (placeAnItem(counter)) {
+                activePlayer = 1;
+                counter.animate().translationYBy(1000f).rotation(180).setDuration(2000);
+            }
         }
         else {
             counter.setImageResource(R.drawable.red);
             placeAnItem(counter);
-            activePlayer = 0;
+            if (placeAnItem(counter)) {
+                activePlayer = 0;
+                counter.animate().translationYBy(1000f).rotation(180).setDuration(2000);
+            }
         }
 
-        counter.animate().translationYBy(1000f).rotation(180).setDuration(2000);
+
     }
 
     @Override
