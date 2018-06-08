@@ -5,7 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
-import android.widget.GridLayout;
+import android.support.v7.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -30,8 +30,6 @@ public class MainActivity extends AppCompatActivity {
     public void dropIn(View view) {
 
         ImageView counter = (ImageView) view;
-
-
 
         int tappedCounter = Integer.parseInt(counter.getTag().toString());
 
@@ -118,23 +116,18 @@ public class MainActivity extends AppCompatActivity {
         gameIsActive = true;
 
         LinearLayout layout = findViewById(R.id.playAgainLayout);
-
         layout.setVisibility(View.INVISIBLE);
 
         activePlayer = 0;
 
         for (int i = 0; i < gameState.length; i++) {
-
             gameState[i] = 2;
-
         }
 
-        GridLayout gridLayout = findViewById(R.id.gridLayout);
+        GridLayout grid = findViewById(R.id.gridLayout);
 
-        for (int i = 0; i< gridLayout.getChildCount(); i++) {
-
-            ((ImageView) gridLayout.getChildAt(i)).setImageResource(0);
-
+        for (int i = 0; i< grid.getChildCount(); i++) {
+            ((ImageView) grid.getChildAt(i)).setImageDrawable(null);
         }
 
     }
