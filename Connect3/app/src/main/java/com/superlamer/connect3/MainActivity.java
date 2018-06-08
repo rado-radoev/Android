@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
 
         gameIsActive = true;
 
-        LinearLayout layout = (LinearLayout)findViewById(R.id.playAgainLayout);
+        LinearLayout layout = findViewById(R.id.playAgainLayout);
 
         layout.setVisibility(View.INVISIBLE);
 
@@ -129,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-        GridLayout gridLayout = (GridLayout)findViewById(R.id.gridLayout);
+        GridLayout gridLayout = findViewById(R.id.gridLayout);
 
         for (int i = 0; i< gridLayout.getChildCount(); i++) {
 
