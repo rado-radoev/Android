@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -20,7 +22,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final TextView volumeText = (TextView) findViewById(R.id.volumeLabel);
+
+        final TextView volumeText = findViewById(R.id.volumeLabel);
 
         mediaPlayer = MediaPlayer.create(this, R.raw.motorcycle);
 
@@ -31,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        final SeekBar volumeControl = (SeekBar) findViewById(R.id.seekBar);
+        final SeekBar volumeControl = findViewById(R.id.seekBar);
         volumeControl.setMax(MAXVOLUME);
         volumeControl.setProgress(curVolume);
 
@@ -40,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, progress, 0);
                 volumeText.setText(String.valueOf(progress));
-                Log.i("SeekBar value: ", String.valueOf(progress));
             }
 
             @Override
@@ -53,6 +55,37 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+
+        final SeekBar scrubber = findViewById(R.id.scrubber);
+        scrubber.setMax(mediaPlayer.getDuration());
+
+        new Timer().scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                scrubber.setProgress(mediaPlayer.getCurrentPosition());
+            }
+        },0, 100);
+
+        scrubber.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                Log.i("scrubber value: ", String.valueOf(progress));
+                mediaPlayer.seekTo(progress);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                mediaPlayer.pause();
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                mediaPlayer.start();
+            }
+        });
+
+
 
     }
 

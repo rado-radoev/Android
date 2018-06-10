@@ -44,4 +44,12 @@
         android:layout_alignStart="@+id/playBtn"
         android:layout_marginBottom="137dp"
         android:text="0" />
+
+    <SeekBar
+        android:id="@+id/scrubber"
+        android:layout_width="298dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/seekBar"
+        android:layout_marginTop="164dp" />
 </RelativeLayout>
