@@ -20,9 +20,11 @@ public class MainActivity extends AppCompatActivity {
         int id = view.getId();
         String ourId = "";
 
-        ourId = view.getResources().getResourceEntryName(id);
+        ourId = view.getContext().getResources().getResourceEntryName(id);
 
-        int resourceID = getResources().getIdentifier(ourId, "raw", "com.superlamer.gridlayout");
+//        view.getContext().getResources().getIdentifier(ourId, "raw", "com.superlamer.gridlayout");
+
+        int resourceID = view.getContext().getResources().getIdentifier(ourId, "raw", "com.superlamer.gridlayout");
 
         MediaPlayer mplayer = MediaPlayer.create(this, resourceID);
         mplayer.start();

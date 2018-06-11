@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.media.MediaPlayer;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import java.util.Timer;
@@ -21,7 +22,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
 
         final TextView volumeText = findViewById(R.id.volumeLabel);
 
