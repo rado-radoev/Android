@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         goBtn = findViewById(R.id.goBtn);
 
         timeDisplay = findViewById(R.id.displayTimer);
-        timeDisplay.setText("0:30");
+        timeDisplay.setText(String.format(Locale.US,"%d:%02d", 0, 30));
 
 
         timeSeekBar = findViewById(R.id.timerbar);
@@ -70,17 +70,14 @@ public class MainActivity extends AppCompatActivity {
             int seconds = Integer.valueOf(timeDisplay.getText().toString().split(":")[1]);
 
             handler.postDelayed(this, 1000);
-            if (seconds >= 0) {
-                seconds--;
-            }
+            --seconds;
 
-            if (seconds == 0){
+            if (seconds < 0){
                 seconds = 59;
                 minutes --;
-                timeDisplay.setText(String.format(Locale.US, "%d:%02d", minutes, seconds));
             }
 
-            if (minutes > 0) {
+            if (minutes >= 0) {
                 Log.i("Minutes: ", String.valueOf(minutes) + " Seconds: " + String.valueOf(seconds));
                 timeDisplay.setText(String.format(Locale.US, "%d:%02d", minutes, seconds));
             }
@@ -89,7 +86,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void startCountDown(View view) {
-
         Log.i("isCountdownRunning: ", String.valueOf(isCountDownRunning));
         // if there is no countdowm currently running
         // start countdown and change button text
