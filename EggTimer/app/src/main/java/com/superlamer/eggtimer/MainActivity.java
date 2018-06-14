@@ -69,31 +69,46 @@ public class MainActivity extends AppCompatActivity {
             int minutes = Integer.valueOf(timeDisplay.getText().toString().split(":")[0]);
             int seconds = Integer.valueOf(timeDisplay.getText().toString().split(":")[1]);
 
-            if (minutes > 0 && seconds > 00) {
-                timeDisplay.setText(String.format(Locale.US, "%d:%02d", --minutes, --seconds));
-                handler.postDelayed(this, 1000);
+            handler.postDelayed(this, 1000);
+            if (seconds > 0) {
+                seconds--;
             }
             else {
-                handler.removeCallbacks(this);
+                minutes--;
             }
 
-
+            if (minutes > 0) {
+                Log.i("Minutes: ", String.valueOf(minutes) + " Seconds: " + String.valueOf(seconds));
+                timeDisplay.setText(String.format(Locale.US, "%d:%02d", minutes, seconds));
+                handler.postDelayed(this, 1000);
+            }
         }
     };
 
 
     public void startCountDown(View view) {
 
-        if (!isCountDownRunning) {
-            goBtn.setText("GO!");
-            timeSeekBar.setVisibility(View.VISIBLE);
-            handler.removeCallbacks(timerUpdater);
 
+        // if there is no countdowm currently running
+        // start countdown and change button text
+        // change coundwonRunning variable to true
+
+        // if there is countdown runnin
+        // stop countdown
+        // change button text to go
+        // change varibale to false
+
+        if (!isCountDownRunning) {
+            goBtn.setText("STOP!");
+            timeSeekBar.setVisibility(View.INVISIBLE);
+            handler.post(timerUpdater);
+            isCountDownRunning = true;
         }
         else {
-            timeSeekBar.setVisibility(View.INVISIBLE);
-            goBtn.setText("STOP!");
-            handler.post(timerUpdater);
+            timeSeekBar.setVisibility(View.VISIBLE);
+            goBtn.setText("GO!");
+            handler.removeCallbacks(timerUpdater);
+            isCountDownRunning = false;
         }
 
 //        new CountDownTimer(time , 1000) {
