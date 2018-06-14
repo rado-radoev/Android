@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <SeekBar
+        android:id="@+id/timerbar"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="20dp" />
+
+    <ImageView
+        android:id="@+id/egg"
+        android:layout_width="291dp"
+        android:layout_height="376dp"
+        android:layout_centerInParent="true"
+        app:srcCompat="@drawable/egg" />
+
+    <Button
+        android:id="@+id/goBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="120dp"
+        android:onClick="startCountDown"
+        android:text="GO!" />
+
+    <TextView
+        android:id="@+id/displayTimer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="0:30"
+        android:textSize="44sp"
+        app:fontFamily="sans-serif" />
+
+</RelativeLayout>
