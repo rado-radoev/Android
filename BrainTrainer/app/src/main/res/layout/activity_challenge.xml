@@ -18,8 +18,10 @@
             android:id="@+id/answer1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@android:color/holo_purple"
+            android:padding="15dp"
             android:text="9"
-            android:textSize="70dp"
+            android:textSize="70sp"
             app:layout_column="0"
             app:layout_columnWeight="1"
             app:layout_gravity="fill"
@@ -30,21 +32,25 @@
             android:id="@+id/answer2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@android:color/holo_blue_bright"
+            android:onClick="checkResult"
             android:text="6"
-            android:textSize="70dp"
+            android:textSize="70sp"
             app:layout_column="1"
             app:layout_columnWeight="1"
             app:layout_gravity="fill"
             app:layout_row="0"
-            app:layout_rowWeight="1"
-            />
+            app:layout_rowWeight="1" />
 
         <Button
             android:id="@+id/answer3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@android:color/holo_orange_dark"
+            android:onClick="checkResult"
+            android:padding="15dp"
             android:text="8"
-            android:textSize="70dp"
+            android:textSize="70sp"
             app:layout_column="0"
             app:layout_columnWeight="1"
             app:layout_gravity="fill"
@@ -55,8 +61,10 @@
             android:id="@+id/answer4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@android:color/holo_green_light"
+            android:onClick="checkResult"
             android:text="12"
-            android:textSize="70dp"
+            android:textSize="70sp"
             app:layout_column="1"
             app:layout_columnWeight="1"
             app:layout_gravity="fill"
@@ -75,7 +83,6 @@
         android:layout_marginTop="10dp"
         android:background="#FFFF00"
         android:clickable="false"
-        android:editable="false"
         android:text="30s"
         android:textSize="30sp" />
 
@@ -90,7 +97,6 @@
         android:layout_marginRight="25dp"
         android:layout_marginTop="10dp"
         android:clickable="false"
-        android:editable="false"
         android:text="3 + 3"
         android:textSize="30sp" />
 
@@ -105,8 +111,18 @@
         android:layout_marginTop="10dp"
         android:background="#FFA500"
         android:clickable="false"
-        android:editable="false"
         android:text="0/0"
         android:textSize="30sp" />
+
+    <TextView
+        android:id="@+id/answerText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="52dp"
+        android:alpha=".5"
+        android:text="TextView"
+        android:textSize="50sp" />
 
 </RelativeLayout>
