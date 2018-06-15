@@ -1,5 +1,6 @@
 package com.superlamer.eggtimer;
 
+import android.media.MediaPlayer;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
     private Button goBtn;
     private boolean isCountDownRunning;
     private Handler handler;
+    private MediaPlayer mediaPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
         timeDisplay = findViewById(R.id.displayTimer);
         timeDisplay.setText(String.format(Locale.US,"%d:%02d", 0, 30));
 
+        mediaPlayer = MediaPlayer.create(this, R.raw.alarm);
 
         timeSeekBar = findViewById(R.id.timerbar);
         timeSeekBar.setMax(600);
@@ -48,11 +51,14 @@ public class MainActivity extends AppCompatActivity {
 //                Log.i("Minutes: ", String.valueOf(minutes));
 //                Log.i("Seconds: ", String.valueOf(seconds));
                 timeDisplay.setText(String.format(Locale.US,"%d:%02d", minutes, seconds));
+                seekBar.setProgress(progress);
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
+                if (mediaPlayer.isPlaying()) {
+                    mediaPlayer.pause();
+                }
             }
 
             @Override
@@ -81,20 +87,30 @@ public class MainActivity extends AppCompatActivity {
                 Log.i("Minutes: ", String.valueOf(minutes) + " Seconds: " + String.valueOf(seconds));
                 timeDisplay.setText(String.format(Locale.US, "%d:%02d", minutes, seconds));
             }
+
+            if (minutes == 0 && seconds == 0 && isCountDownRunning) {
+                mediaPlayer.start();
+                stopCountDown();
+                Log.i("Playing sound", String.valueOf(mediaPlayer.getAudioSessionId()));
+            }
         }
     };
+
+    public void stopCountDown() {
+        Log.i("isCountdownRunning: ", String.valueOf(isCountDownRunning));
+
+        if (isCountDownRunning) {
+            timeSeekBar.setVisibility(View.VISIBLE);
+            goBtn.setText("GO!");
+            handler.removeCallbacks(timerUpdater);
+            isCountDownRunning = false;
+        }
+
+    }
 
 
     public void startCountDown(View view) {
         Log.i("isCountdownRunning: ", String.valueOf(isCountDownRunning));
-        // if there is no countdowm currently running
-        // start countdown and change button text
-        // change coundwonRunning variable to true
-
-        // if there is countdown runnin
-        // stop countdown
-        // change button text to go
-        // change varibale to false
 
         if (!isCountDownRunning) {
             goBtn.setText("STOP!");
@@ -103,10 +119,7 @@ public class MainActivity extends AppCompatActivity {
             isCountDownRunning = true;
         }
         else {
-            timeSeekBar.setVisibility(View.VISIBLE);
-            goBtn.setText("GO!");
-            handler.removeCallbacks(timerUpdater);
-            isCountDownRunning = false;
+            stopCountDown();
         }
 
 //        new CountDownTimer(time , 1000) {
