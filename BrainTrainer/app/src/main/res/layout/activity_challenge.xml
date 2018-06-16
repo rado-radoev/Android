@@ -27,6 +27,7 @@
             app:layout_row="0"
             app:layout_rowWeight="1"
             app:layout_gravity="fill"
+            android:onClick="btnClicked"
             android:tag="1" />
 
         <Button
@@ -41,6 +42,7 @@
             app:layout_row="0"
             app:layout_rowWeight="1"
             app:layout_gravity="fill"
+            android:onClick="btnClicked"
             android:tag="2" />
 
         <Button
@@ -48,7 +50,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@android:color/holo_orange_dark"
-            android:onClick="checkResult"
             android:padding="15dp"
             android:text="8"
             android:textSize="70sp"
@@ -57,6 +58,7 @@
             app:layout_row="1"
             app:layout_rowWeight="1"
             app:layout_gravity="fill"
+            android:onClick="btnClicked"
             android:tag="3"/>
 
         <Button
@@ -64,7 +66,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@android:color/holo_green_light"
-            android:onClick="checkResult"
             android:text="12"
             android:textSize="70sp"
             app:layout_column="1"
@@ -72,6 +73,7 @@
             app:layout_row="1"
             app:layout_rowWeight="1"
             app:layout_gravity="fill"
+            android:onClick="btnClicked"
             android:tag="4"/>
     </android.support.v7.widget.GridLayout>
 

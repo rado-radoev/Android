@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class ChallengeActivity extends AppCompatActivity {
 
@@ -28,6 +27,7 @@ public class ChallengeActivity extends AppCompatActivity {
     private ArrayList<String> operators = new ArrayList<String>();
     private int activity_challenge;
     private int result;
+    private  GridLayout gLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,29 +87,31 @@ public class ChallengeActivity extends AppCompatActivity {
             default:
                 break;
         }
+    }
 
-
+    public void btnClicked(View view) {
+        String answer = String.valueOf(result);
+        String buttonText = ((Button) findViewById(R.id.answer1)).getText().toString();
+        if (answer.equals(buttonText)) {
+            answerText.setVisibility(View.VISIBLE);
+            answerText.setText("Correct");
+        }
+        else {
+            answerText.setVisibility(View.VISIBLE);
+            answerText.setText("Wrong answer");
+        }
     }
 
     private void updateButtonText() {
-        GridLayout gLayout = (GridLayout) findViewById(R.id.answerGrid);
-        int cols = gLayout.getColumnCount();
-        int rows = gLayout.getRowCount();
-        int totalBtns = cols + rows;
+        Button btn1 = findViewById(R.id.answer1);
+        Button btn2 = findViewById(R.id.answer2);
+        Button btn3 = findViewById(R.id.answer3);
+        Button btn4 = findViewById(R.id.answer4);
 
-        int correctResultBtn = rnd.nextInt(totalBtns);
-
-        ArrayList<View> allButtons;
-        allButtons = ((GridLayout) findViewById(R.id.answerGrid)).getTouchables();
-
-        for (View btn : allButtons) {
-            Button currBtn = (Button) btn;
-            if (currBtn.getTag().equals(String.valueOf(correctResultBtn))) {
-                currBtn.setText(String.valueOf(result));
-            }
-            currBtn.setText(rnd.nextInt(10));
-        }
-
+       btn1.setText(String.valueOf(result));
+       btn2.setText(String.valueOf(rnd.nextInt(10) + result));
+       btn3.setText(String.valueOf(rnd.nextInt(10) + result));
+       btn4.setText(String.valueOf(rnd.nextInt(10) + result));
     }
 
     public boolean isAnswerCorrect(int userAnser, int expectedAnswer) {
