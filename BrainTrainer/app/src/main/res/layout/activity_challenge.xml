@@ -24,23 +24,24 @@
             android:textSize="70sp"
             app:layout_column="0"
             app:layout_columnWeight="1"
-            app:layout_gravity="fill"
             app:layout_row="0"
-            app:layout_rowWeight="1" />
+            app:layout_rowWeight="1"
+            app:layout_gravity="fill"
+            android:tag="1" />
 
         <Button
             android:id="@+id/answer2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@android:color/holo_blue_bright"
-            android:onClick="checkResult"
             android:text="6"
             android:textSize="70sp"
             app:layout_column="1"
             app:layout_columnWeight="1"
-            app:layout_gravity="fill"
             app:layout_row="0"
-            app:layout_rowWeight="1" />
+            app:layout_rowWeight="1"
+            app:layout_gravity="fill"
+            android:tag="2" />
 
         <Button
             android:id="@+id/answer3"
@@ -53,9 +54,10 @@
             android:textSize="70sp"
             app:layout_column="0"
             app:layout_columnWeight="1"
-            app:layout_gravity="fill"
             app:layout_row="1"
-            app:layout_rowWeight="1" />
+            app:layout_rowWeight="1"
+            app:layout_gravity="fill"
+            android:tag="3"/>
 
         <Button
             android:id="@+id/answer4"
@@ -67,9 +69,10 @@
             android:textSize="70sp"
             app:layout_column="1"
             app:layout_columnWeight="1"
-            app:layout_gravity="fill"
             app:layout_row="1"
-            app:layout_rowWeight="1" />
+            app:layout_rowWeight="1"
+            app:layout_gravity="fill"
+            android:tag="4"/>
     </android.support.v7.widget.GridLayout>
 
     <TextView
@@ -87,7 +90,7 @@
         android:textSize="30sp" />
 
     <TextView
-        android:id="@+id/oprationText"
+        android:id="@+id/operationText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/countDownText"
