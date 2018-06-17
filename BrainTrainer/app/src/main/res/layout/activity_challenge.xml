@@ -106,7 +106,7 @@
         android:textSize="30sp" />
 
     <TextView
-        android:id="@+id/restulText"
+        android:id="@+id/resultText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/countDownText"
@@ -125,9 +125,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="50dp"
-        android:alpha=".5"
+        android:layout_marginBottom="40dp"
+        android:paddingTop="30dp"
         android:text="TextView"
-        android:textSize="50sp" />
+        android:textSize="35sp" />
 
 </RelativeLayout>

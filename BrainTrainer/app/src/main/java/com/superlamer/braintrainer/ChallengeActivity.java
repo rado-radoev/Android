@@ -3,10 +3,10 @@ package com.superlamer.braintrainer;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.TextView;
@@ -16,11 +16,13 @@ import java.util.ArrayList;
 
 public class ChallengeActivity extends AppCompatActivity {
 
-    private TextView textView;
     private final int COUNTDOWNTIME = 30;
+    private final int MAX_QUESTIONS = 10;
+    private int currentQuestion;
     private TextView countDownText;
     private TextView answerText;
     private TextView opText;
+    private TextView resultText;
     private int score;
     private SecureRandom rnd;
     private final int RANDOM_SEED = 50;
@@ -34,7 +36,6 @@ public class ChallengeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_challenge);
 
-
         operators = new ArrayList<String>();
 
         rnd = new SecureRandom();
@@ -42,6 +43,9 @@ public class ChallengeActivity extends AppCompatActivity {
         countDownText = findViewById(R.id.countDownText);
         answerText = findViewById(R.id.answerText);
         opText = findViewById(R.id.operationText);
+        resultText = findViewById(R.id.resultText);
+
+        resultText.setText(String.format("%d/%d", 0, MAX_QUESTIONS));
 
         generateListOfOperators();
         generateTask();
@@ -57,8 +61,11 @@ public class ChallengeActivity extends AppCompatActivity {
     }
 
     public void generateTask() {
-        int num1 = rnd.nextInt(10);
-        int num2 = rnd.nextInt(10);
+        int num1 = rnd.nextInt(10) + 1;
+        int num2 = 0;
+        while (num2 < num1) {
+            num2 = rnd.nextInt(10);
+        }
 
         String operator = operators.get(rnd.nextInt(operators.size()));
 
@@ -73,61 +80,79 @@ public class ChallengeActivity extends AppCompatActivity {
                 break;
             case "*":
                 result = num1 * num2;
+                break;
             case "/":
-                if (num1 < num2){
-                    while (num1 > num2) {
-                        num1 = rnd.nextInt(50);
-                    }
-                }
                 result = num1 / num2;
                 break;
             default:
-                break;
+                throw new IllegalArgumentException("Unsupported mathematical operator supplied");
+        }
+    }
+
+    private void advanceToNextQuetion() {
+        currentQuestion++;
+        Log.i("Current question: ", String.valueOf(currentQuestion));
+        if (currentQuestion <= MAX_QUESTIONS) {
+            generateTask();
+            updateButtonText();
+        }
+        else {
+            answerText.setText(String.format("Your score is: ", resultText.getText()));
         }
     }
 
     public void btnClicked(View view) {
         String answer = String.valueOf(result);
-        String buttonText = ((Button) findViewById(R.id.answer1)).getText().toString();
+        String buttonText = ((Button) view).getText().toString();
+
         if (answer.equals(buttonText)) {
-            answerText.setAlpha(1);
+            answerText.setTextColor(Color.GREEN);
             answerText.setText("Correct");
+            updateReusultText();
+            advanceToNextQuetion();
         }
         else {
-            answerText.setAlpha(1);
+            answerText.setTextColor(Color.RED);
             answerText.setText("Wrong answer");
         }
     }
 
+    private void updateReusultText() {
+        result++;
+        String res = resultText.getText().toString();
+        String currentResult = res.substring(0, res.indexOf("/"));
+
+        String newResult = String.valueOf(Integer.valueOf(currentResult) + 1);
+        resultText.setText(String.format("%s/%d", newResult, MAX_QUESTIONS));
+    }
+
     private void updateButtonText() {
-        Button btn1 = findViewById(R.id.answer1);
-        Button btn2 = findViewById(R.id.answer2);
-        Button btn3 = findViewById(R.id.answer3);
-        Button btn4 = findViewById(R.id.answer4);
+        View view = (View) findViewById(android.R.id.content);
+        ArrayList<Button> buttons = new ArrayList<Button>();
 
-       btn1.setText(String.valueOf(result));
-       btn2.setText(String.valueOf(rnd.nextInt(10) + result));
-       btn3.setText(String.valueOf(rnd.nextInt(10) + result));
-       btn4.setText(String.valueOf(rnd.nextInt(10) + result));
+        for (View v : view.getTouchables()) {
+            if (v instanceof  Button) {
+                ((Button) v).setText(String.valueOf(rnd.nextInt(40) + 1));
+                buttons.add((Button) v);
+            }
+        }
+
+        buttons.get(rnd.nextInt(buttons.size())).setText(String.valueOf(result));
     }
 
-    public boolean isAnswerCorrect(int userAnser, int expectedAnswer) {
-        return userAnser == expectedAnswer;
-    }
 
     public void startCountDown() {
 
-        //countDownText.setText(String.format("%2ds", COUNTDOWNTIME));
         final int countDownTime = Integer.valueOf(countDownText.getText().toString().substring(0,2));
 
-        countDownText.setTextColor(Color.BLACK);
+        countDownText.setTextColor(Color.GRAY);
 
         new CountDownTimer(COUNTDOWNTIME * 1000, 1000) {
 
             @Override
             public void onTick(long millisUntilFinished) {
                 int time = (int) millisUntilFinished / 1000;
-                Log.i("Time is up", String.valueOf(time));
+                //Log.i("Time is up", String.valueOf(time));
                 countDownText.setText(String.format("%2ds", time));
             }
 
@@ -135,10 +160,9 @@ public class ChallengeActivity extends AppCompatActivity {
             public void onFinish() {
                 countDownText.setText(String.format("%2ds", 0));
                 countDownText.setTextColor(Color.RED);
-                answerText.setText(String.format("You score is: ", score ));
-                answerText.setAlpha(1);
-                Log.i("Time is up", "");
-
+                answerText.setText(String.format("Your score is: %s", resultText.getText().toString()));
+                currentQuestion = MAX_QUESTIONS + 1;
+                //Log.i("Time is up", "");
             }
         }.start();
     }
