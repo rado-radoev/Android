@@ -39,9 +39,6 @@ public class ChallengeActivity extends AppCompatActivity {
 
         rnd = new SecureRandom();
 
-        textView = findViewById(R.id.answerText);
-        textView.setVisibility(View.INVISIBLE);
-
         countDownText = findViewById(R.id.countDownText);
         answerText = findViewById(R.id.answerText);
         opText = findViewById(R.id.operationText);
@@ -93,11 +90,11 @@ public class ChallengeActivity extends AppCompatActivity {
         String answer = String.valueOf(result);
         String buttonText = ((Button) findViewById(R.id.answer1)).getText().toString();
         if (answer.equals(buttonText)) {
-            answerText.setVisibility(View.VISIBLE);
+            answerText.setAlpha(1);
             answerText.setText("Correct");
         }
         else {
-            answerText.setVisibility(View.VISIBLE);
+            answerText.setAlpha(1);
             answerText.setText("Wrong answer");
         }
     }
@@ -124,7 +121,6 @@ public class ChallengeActivity extends AppCompatActivity {
         final int countDownTime = Integer.valueOf(countDownText.getText().toString().substring(0,2));
 
         countDownText.setTextColor(Color.BLACK);
-        answerText.setAlpha(0);
 
         new CountDownTimer(COUNTDOWNTIME * 1000, 1000) {
 
