@@ -29,12 +29,16 @@ public class ChallengeActivity extends AppCompatActivity {
     private ArrayList<String> operators = new ArrayList<String>();
     private int activity_challenge;
     private int result;
+    private Button playAgain;
     private  GridLayout gLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_challenge);
+
+        playAgain = findViewById(R.id.playAgainBtn);
+        playAgain.setEnabled(false);
 
         operators = new ArrayList<String>();
 
@@ -98,6 +102,7 @@ public class ChallengeActivity extends AppCompatActivity {
         }
         else {
             answerText.setText(String.format("Your score is: ", resultText.getText()));
+            playAgain.setEnabled(true);
         }
     }
 
@@ -162,8 +167,19 @@ public class ChallengeActivity extends AppCompatActivity {
                 countDownText.setTextColor(Color.RED);
                 answerText.setText(String.format("Your score is: %s", resultText.getText().toString()));
                 currentQuestion = MAX_QUESTIONS + 1;
+                playAgain.setEnabled(true);
                 //Log.i("Time is up", "");
             }
         }.start();
+    }
+
+    public void restartGame(View view) {
+        currentQuestion = 1;
+        resultText.setText(String.format("%d/%d", 0, 0));
+        countDownText.setText(String.format("%ds",30));
+        advanceToNextQuetion();
+        startCountDown();
+        playAgain.setEnabled(false);
+
     }
 }
