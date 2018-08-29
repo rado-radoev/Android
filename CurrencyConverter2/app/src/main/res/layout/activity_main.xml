@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:ems="10"
-        android:hint="Enter currency"
+        android:hint="Enter US d10ollar amount"
         android:inputType="numberDecimal" />
 
     <Button

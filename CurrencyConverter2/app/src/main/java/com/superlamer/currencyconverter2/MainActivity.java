@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
 
         double convertedCurr = calcCurrency(currToConvertFrom, currToConvertTo);
 
-        Toast.makeText(this, String.valueOf(convertedCurr), Toast.LENGTH_LONG).show();
+        Toast.makeText(this, String.format("%.2f %s", convertedCurr, currToConvertTo.getType()), Toast.LENGTH_LONG).show();
 
     }
 
@@ -40,5 +40,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        setTitle("Currency Converter 2");
     }
 }
