@@ -6,12 +6,37 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/holo_orange_light"
+        android:orientation="vertical"
+        android:padding="30dp">
+
+        <EditText
+            android:id="@+id/editText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="Name"
+            android:textSize="30sp" />
+
+        <Button
+            android:id="@+id/button3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Button" />
+    </LinearLayout>
+
     <android.support.v7.widget.GridLayout
         android:layout_width="match_parent"
-        android:layout_height="360dp"
+        android:layout_height="match_parent"
         android:layout_alignParentStart="true"
-        android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
         android:background="@drawable/board"
         app:columnCount="3"
         app:rowCount="3">
@@ -21,10 +46,10 @@
             android:layout_width="90dp"
             android:layout_height="90dp"
             android:layout_margin="10dp"
-            app:layout_column="0"
-            app:layout_row="0"
             android:onClick="dropIn"
-            android:tag="0"/>
+            android:tag="0"
+            app:layout_column="0"
+            app:layout_row="0" />
 
         <ImageView
             android:id="@+id/red2"
@@ -32,10 +57,10 @@
             android:layout_height="90dp"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"
-            app:layout_column="1"
-            app:layout_row="0"
             android:onClick="dropIn"
-            android:tag="1" />
+            android:tag="1"
+            app:layout_column="1"
+            app:layout_row="0" />
 
         <ImageView
             android:id="@+id/red3"
@@ -43,10 +68,10 @@
             android:layout_height="90dp"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"
-            app:layout_column="2"
-            app:layout_row="0"
             android:onClick="dropIn"
-            android:tag="2" />
+            android:tag="2"
+            app:layout_column="2"
+            app:layout_row="0" />
 
         <ImageView
             android:id="@+id/red4"
@@ -54,10 +79,10 @@
             android:layout_height="90dp"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="20dp"
-            app:layout_column="0"
-            app:layout_row="1"
             android:onClick="dropIn"
-            android:tag="3" />
+            android:tag="3"
+            app:layout_column="0"
+            app:layout_row="1" />
 
         <ImageView
             android:id="@+id/red5"
@@ -66,9 +91,9 @@
             android:layout_marginLeft="10dp"
             android:layout_marginTop="20dp"
             android:onClick="dropIn"
+            android:tag="4"
             app:layout_column="1"
-            app:layout_row="1"
-            android:tag="4" />
+            app:layout_row="1" />
 
         <ImageView
             android:id="@+id/red6"
@@ -76,10 +101,10 @@
             android:layout_height="90dp"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="20dp"
-            app:layout_column="2"
-            app:layout_row="1"
             android:onClick="dropIn"
-            android:tag="5" />
+            android:tag="5"
+            app:layout_column="2"
+            app:layout_row="1" />
 
         <ImageView
             android:id="@+id/red7"
@@ -87,10 +112,10 @@
             android:layout_height="90dp"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="40dp"
-            app:layout_column="0"
-            app:layout_row="2"
             android:onClick="dropIn"
-            android:tag="6" />
+            android:tag="6"
+            app:layout_column="0"
+            app:layout_row="2" />
 
         <ImageView
             android:id="@+id/red8"
@@ -98,10 +123,10 @@
             android:layout_height="90dp"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="40dp"
-            app:layout_column="1"
-            app:layout_row="2"
             android:onClick="dropIn"
-            android:tag="7" />
+            android:tag="7"
+            app:layout_column="1"
+            app:layout_row="2" />
 
         <ImageView
             android:id="@+id/red9"
@@ -109,9 +134,10 @@
             android:layout_height="90dp"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="40dp"
-            app:layout_column="2"
-            app:layout_row="2"
             android:onClick="dropIn"
-            android:tag="8" />
+            android:tag="8"
+            app:layout_column="2"
+            app:layout_row="2" />
     </android.support.v7.widget.GridLayout>
+
 </RelativeLayout>

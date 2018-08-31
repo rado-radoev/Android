@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
             for (int[] winningPosition : winningPositions) {
                 if (gameState[winningPosition[0]]== gameState[winningPosition[1]] &&
                         gameState[winningPosition[1]] == gameState[winningPosition[2]] &&
-                        gameState[winningPosition[0]] != gameState[winningPosition[2]]) {
+                        gameState[winningPosition[0]] != 2) {
                     System.out.println(gameState[winningPosition[0]]);
                 }
             }
