@@ -144,7 +144,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:onClick="playAgain"
-            android:text="Button" />
+            android:text="Play Again" />
     </LinearLayout>
 
 </RelativeLayout>
