@@ -113,8 +113,9 @@
         android:id="@+id/answerCorectness"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/resetBtn"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
+        android:layout_marginBottom="75dp"
         android:paddingBottom="10dp"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
@@ -122,7 +123,7 @@
         android:text="Correct" />
 
     <Button
-        android:id="@+id/resetBtn"
+        android:id="@+id/playAgainBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
