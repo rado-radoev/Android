@@ -11,7 +11,7 @@
         android:layout_width="70dp"
         android:layout_height="60dp"
         android:layout_alignParentStart="true"
-        android:layout_alignTop="@+id/correctAnswersTextView"
+        android:layout_alignTop="@+id/scoreTextView"
         android:layout_marginStart="26dp"
         android:background="#ffff00"
         android:gravity="center"
@@ -22,7 +22,7 @@
         android:id="@+id/taskTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/correctAnswersTextView"
+        android:layout_alignBaseline="@+id/scoreTextView"
         android:layout_centerHorizontal="true"
         android:gravity="center"
         android:paddingLeft="40dp"
@@ -31,7 +31,7 @@
         android:textSize="20sp" />
 
     <TextView
-        android:id="@+id/correctAnswersTextView"
+        android:id="@+id/scoreTextView"
         android:layout_width="70dp"
         android:layout_height="60dp"
         android:layout_alignParentEnd="true"
