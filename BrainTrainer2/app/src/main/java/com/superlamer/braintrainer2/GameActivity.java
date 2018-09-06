@@ -47,10 +47,17 @@ public class GameActivity extends AppCompatActivity {
         playAgain = (Button) findViewById(R.id.playAgainBtn);
         playAgain.setEnabled(false);
 
+    }
 
+    public void startGame() {
         startCountDown();
+        generateMathProblem();
         updateAnswerFields();
 
+        playAgain.setEnabled(false);
+        answerCorrectness.setVisibility(View.INVISIBLE);
+
+        updateScore(0);
     }
 
     private void startCountDown() {
@@ -162,15 +169,23 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
-    private int getUserAnswer() {
-        
+    public void getUserAnswer(View view) {
+
+        Button b = (Button) view;
+        int buttonDigit = Integer.valueOf(b.getText().toString());
+
+        if (isCorrect(buttonDigit)) {
+            updateAnswerCorectness(true);
+            updateScore();
+        }
+
     }
 
     private void updateScore() {
-        scoreTextView.setText(String.format("%d/%d", 0, MAX_QUESTIONS));
+        // get current score and increment
+        String currentScoreText = scoreTextView.getText().toString().split("/")[0];
 
-        // if answer is correct update the score
-        if (isCorrect())
+        scoreTextView.setText(String.format("%d/%d", MAX_QUESTIONS));
     }
 
     public void resetGame() {
