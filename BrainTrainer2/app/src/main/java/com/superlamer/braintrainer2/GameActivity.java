@@ -55,7 +55,7 @@ public class GameActivity extends AppCompatActivity {
     public void startGame() {
         // Instantiate current qustion variable
         currentQuestion = 1;
-        
+
         startCountDown();
         generateMathProblem();
         updateAnswerFields();
