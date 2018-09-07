@@ -21,6 +21,7 @@ public class GameActivity extends AppCompatActivity {
     private static String[] MATHEMATICAL_OPERATORS;
     private static int result;
     private final int MAX_QUESTIONS = 30;
+    private static int currentQuestion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +38,7 @@ public class GameActivity extends AppCompatActivity {
         taskTextView = (TextView) findViewById(R.id.taskTextView);
 
         // Instantiata MATHEMATICAL_OPERATORS array
-        MATHEMATICAL_OPERATORS = new String[]{"+" , "-", "/", "*"};
+        MATHEMATICAL_OPERATORS = new String[]{"+" , "-"};
 
 
         // Instantiate random object
@@ -47,17 +48,20 @@ public class GameActivity extends AppCompatActivity {
         playAgain = (Button) findViewById(R.id.playAgainBtn);
         playAgain.setEnabled(false);
 
+        startGame();
+
     }
 
     public void startGame() {
+        // Instantiate current qustion variable
+        currentQuestion = 1;
+        
         startCountDown();
         generateMathProblem();
         updateAnswerFields();
 
         playAgain.setEnabled(false);
         answerCorrectness.setVisibility(View.INVISIBLE);
-
-        updateScore();
     }
 
     private void startCountDown() {
@@ -78,6 +82,7 @@ public class GameActivity extends AppCompatActivity {
             public void onFinish() {
                 countDownTextView.setText("00s");
                 playAgain.setEnabled(true);
+                currentQuestion = MAX_QUESTIONS;
             }
 
         }.start();
@@ -90,11 +95,17 @@ public class GameActivity extends AppCompatActivity {
      */
     private void generateMathProblem() {
         // Grab random operator
-        int MAX = 100;
+        int MAX = 30;
 
         // generat two random numbers
         int num1 = random.nextInt(MAX) + 1;
         int num2 = random.nextInt(MAX) + 1;
+        if (num1 < num2) {
+            int temp = num2;
+            num2 = num1;
+            num1 = temp;
+        }
+
         int res = 0;
 
         // get random operation
@@ -138,11 +149,12 @@ public class GameActivity extends AppCompatActivity {
 
         // generate random number for all of the buttons
         for (Button b : buttons) {
-            b.setText(random.nextInt(result + 32 - random.nextInt(30)));
+            int randomAnswer = Math.abs(random.nextInt(result + 32 - random.nextInt(30)));
+            b.setText(String.valueOf(randomAnswer));
         }
 
         // Assign reult to a random button
-        buttons[random.nextInt(buttons.length)].setText(result);
+        buttons[random.nextInt(buttons.length)].setText(String.valueOf(result));
     }
 
     private boolean isCorrect(int answer) {
@@ -151,7 +163,6 @@ public class GameActivity extends AppCompatActivity {
 
         if (result == answer) {
             correct = true;
-            updateScore();
         }
 
         return correct;
@@ -179,7 +190,14 @@ public class GameActivity extends AppCompatActivity {
             updateAnswerCorectness(true);
             updateScore();
         }
+        else {
+            updateAnswerCorectness(false);
+        }
 
+        if (currentQuestion <= MAX_QUESTIONS) {
+            nextQuestion();
+            currentQuestion++;
+        }
     }
 
     private void updateScore() {
@@ -192,13 +210,27 @@ public class GameActivity extends AppCompatActivity {
         scoreTextView.setText(String.format("%d/%d", currentScore, MAX_QUESTIONS));
     }
 
-    public void resetGame() {
-        // reset timer to 30s
-        // reset results
-        // reset buttons
-        // hide correct/wrong text
-        // generate new task
-        // disable play again button
+    private void nextQuestion() {
+        generateMathProblem();
+        updateAnswerFields();
+    }
 
+    private void resetTimer() {
+        countDownTextView.setText("30s");
+    }
+
+    private void resetResults() {
+
+    }
+
+    public void resetGame(View view) {
+        // reset timer to 30s
+        countDownTextView.setText("30s");
+        // reset results
+        scoreTextView.setText(String.format("%d/%d", 0, MAX_QUESTIONS));
+        // start game over
+        startGame();
+        // reset question counter
+        currentQuestion = 1;
     }
  }
