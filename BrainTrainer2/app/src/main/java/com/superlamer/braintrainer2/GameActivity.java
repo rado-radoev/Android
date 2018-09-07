@@ -57,7 +57,7 @@ public class GameActivity extends AppCompatActivity {
         playAgain.setEnabled(false);
         answerCorrectness.setVisibility(View.INVISIBLE);
 
-        updateScore(0);
+        updateScore();
     }
 
     private void startCountDown() {
@@ -151,6 +151,7 @@ public class GameActivity extends AppCompatActivity {
 
         if (result == answer) {
             correct = true;
+            updateScore();
         }
 
         return correct;
@@ -184,8 +185,11 @@ public class GameActivity extends AppCompatActivity {
     private void updateScore() {
         // get current score and increment
         String currentScoreText = scoreTextView.getText().toString().split("/")[0];
+        int currentScore = Integer.valueOf(currentScoreText);
 
-        scoreTextView.setText(String.format("%d/%d", MAX_QUESTIONS));
+        currentScore++;
+
+        scoreTextView.setText(String.format("%d/%d", currentScore, MAX_QUESTIONS));
     }
 
     public void resetGame() {
