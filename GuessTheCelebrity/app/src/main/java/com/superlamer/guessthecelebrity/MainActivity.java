@@ -14,6 +14,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.ExecutionException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -68,6 +70,18 @@ public class MainActivity extends AppCompatActivity {
 
         try {
             result = task.execute("http://www.posh24.se/kandisar").get();
+
+            String[] splitResult = result.split("<div class=\"sidebarContainer\">");
+
+            Pattern p = Pattern.compile("src=\"(.*?)\"");
+            Matcher m = p.matcher(splitResult[0]);
+
+            while (m.find()) {
+                Log.i("Image URL", m.group(1));
+            }
+
+            
+
             Log.i("Contentes of URL", result);
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
