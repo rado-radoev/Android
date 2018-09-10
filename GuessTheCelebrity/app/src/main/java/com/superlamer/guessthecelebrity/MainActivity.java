@@ -4,6 +4,16 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -11,23 +21,56 @@ public class MainActivity extends AppCompatActivity {
     String[] names;
     Bitmap[] celebrityImages;
 
-    public class URLParser extends AsyncTask<String, Void, String> {
+    public class DownloadTask extends AsyncTask<String, Void, String> {
 
         @Override
         public String doInBackground(String... urls) {
 
-            return null;
+            String result = "";
+            URL url;
+            HttpURLConnection httpURLConnection = null;
+
+            try {
+                url = new URL(urls[0]);
+                httpURLConnection = (HttpURLConnection) url.openConnection();
+
+                InputStream in = httpURLConnection.getInputStream();
+                InputStreamReader reader = new InputStreamReader(in);
+
+                int data = reader.read();
+
+                while (data != -1) {
+                    result += (char) data;
+                    reader.read();
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+            return result;
         }
     }
 
 
+    public void celebChosen(View view) {
 
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        DownloadTask task = new DownloadTask();
+        String result = null;
 
+        try {
+            result = task.execute("http://www.posh24.se/kandisar").get();
+            Log.i("Contentes of URL", result);
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
     }
 }
