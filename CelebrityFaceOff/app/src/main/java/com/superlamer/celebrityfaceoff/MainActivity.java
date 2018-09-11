@@ -134,9 +134,9 @@ public class MainActivity extends AppCompatActivity {
         Button button = (Button) view;
 
         if (button.getText().equals(celebNames.get(choseCeleb))) {
-            Toast.makeText(getApplicationContext(), "Correct!", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Correct!", Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(getApplicationContext(), "Wrong! This is: " + celebNames.get(choseCeleb), Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Wrong! This is: " + celebNames.get(choseCeleb), Toast.LENGTH_SHORT).show();
         }
 
         nextQuestion();
