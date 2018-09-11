@@ -80,7 +80,14 @@ public class MainActivity extends AppCompatActivity {
                 Log.i("Image URL", m.group(1));
             }
 
-            
+
+            p = Pattern.compile("alt=\"(.*?)\"");
+            m = p.matcher(splitResult[0]);
+
+            while (m.find()) {
+                Log.i("Celebrity name" , m.group(1));
+            }
+
 
             Log.i("Contentes of URL", result);
         } catch (InterruptedException | ExecutionException e) {
