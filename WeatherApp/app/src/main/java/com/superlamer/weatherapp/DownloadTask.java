@@ -63,7 +63,13 @@ public class DownloadTask extends AsyncTask <String, Void, String> {
             // Get the temps
             JSONObject tempInfo = jsonObject.getJSONObject("main");
             String currTemp = tempInfo.getString("temp");
-            Log.i("Current temp", currTemp);
+            String minTemp = tempInfo.getString("temp_min");
+            String maxTemp = tempInfo.getString("temp_max");
+            Log.i("Current temp",  String.format("%.2f %s", convertKelvinToFahrenheit(currTemp), "\u2103"));
+            Log.i("Min temp",  String.format("%.2f %s", convertKelvinToFahrenheit(minTemp), "\u2103"));
+            Log.i("Max temp", String.format("%.2f %s", convertKelvinToFahrenheit(maxTemp), "\u2103"));
+            String s = "\u03C0";
+            Log.i("Greek p", s);
 
         } catch (JSONException e) {
             e.printStackTrace();
