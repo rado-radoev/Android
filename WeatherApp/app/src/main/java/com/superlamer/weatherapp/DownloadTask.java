@@ -1,6 +1,7 @@
 package com.superlamer.weatherapp;
 
 import android.os.AsyncTask;
+import android.util.JsonReader;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -60,12 +61,9 @@ public class DownloadTask extends AsyncTask <String, Void, String> {
             }
 
             // Get the temps
-            String tempInfo = jsonObject.getJSONObject("temp");
-            //JSONArray tempArr = new JSONArray(tempInfo);
-//            for (int i = 0; i < tempArr.length(); i++) {
-//                JSONObject tempJson = tempArr.getJSONObject(i);
-//                Log.i("Current temp", tempJson.getString("temp"));
-//            }
+            JSONObject tempInfo = jsonObject.getJSONObject("main");
+            String currTemp = tempInfo.getString("temp");
+            Log.i("Current temp", currTemp);
 
         } catch (JSONException e) {
             e.printStackTrace();
