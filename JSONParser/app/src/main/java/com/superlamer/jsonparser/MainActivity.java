@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -22,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public String doInBackground(String... urls) {
-            String result = null;
+            String result = "";
 
             try {
                 URL url = new URL(urls[0]);
@@ -46,17 +47,29 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
 
             try {
-                JSONObject jsonObject = new JSONObject(s);
+                JSONObject jsonObject = new JSONObject(result);
+
+                String weather = jsonObject.getString("weather");
+                Log.i("Weather content", weather);
+
+                JSONArray jsonArray = new JSONArray(weather);
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonPart = jsonArray.getJSONObject(i);
+                    Log.i("Main", jsonPart.getString("main"));
+                    Log.i("Description", jsonPart.getString("description"));
+                }
+
+
             } catch (JSONException jse) {
                 jse.printStackTrace();
             }
 
 
-            Log.i("JSON", s);
+
         }
     }
 
