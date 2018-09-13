@@ -1,7 +1,6 @@
 package com.superlamer.weatherapp;
 
 import android.os.AsyncTask;
-import android.util.JsonReader;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -68,8 +67,6 @@ public class DownloadTask extends AsyncTask <String, Void, String> {
             Log.i("Current temp",  String.format("%.2f %s", convertKelvinToFahrenheit(currTemp), "\u2103"));
             Log.i("Min temp",  String.format("%.2f %s", convertKelvinToFahrenheit(minTemp), "\u2103"));
             Log.i("Max temp", String.format("%.2f %s", convertKelvinToFahrenheit(maxTemp), "\u2103"));
-            String s = "\u03C0";
-            Log.i("Greek p", s);
 
         } catch (JSONException e) {
             e.printStackTrace();
