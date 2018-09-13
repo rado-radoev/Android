@@ -53,7 +53,6 @@ public class DownloadTask extends AsyncTask <String, Void, String> {
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
 
-
         Map<String, String> weatherData = null;
 
         try {
@@ -87,9 +86,9 @@ public class DownloadTask extends AsyncTask <String, Void, String> {
 
         } catch (JSONException e) {
             e.printStackTrace();
+        } finally {
+            delegate.processFinish(weatherData);
         }
-
-        delegate.processFinish(weatherData);
     }
 
     private double convertKelvinToCelcius(String kelvin) {

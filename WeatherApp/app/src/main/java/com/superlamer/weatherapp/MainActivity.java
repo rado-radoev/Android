@@ -51,13 +51,14 @@ public class MainActivity extends AppCompatActivity implements  AsyncResponse {
 
     @Override
     public void processFinish(Map<String, String> output) {
-        if (output != null) {
+        Log.i("Output", output.toString());
+        if (!output.isEmpty()) {
             currenCondition.setText(String.format(Locale.US, "%s: %s", "Currently", output.get("main")));
             currentConditionDescription.setText(String.format(Locale.US, "%s: %s", "Current condition", output.get("Description")));
             currentTemp.setText(String.format(Locale.US, "%s: %s", "Current temp: ", output.get("currentTemp")));
         }
         else {
-            Toast.makeText(getApplicationContext(), "Invalid location", Toast.LENGTH_SHORT);
+            Toast.makeText(getApplicationContext(), "Invalid location", Toast.LENGTH_SHORT).show();
         }
     }
 }
