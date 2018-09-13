@@ -11,6 +11,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Locale;
 import java.util.Map;
 
@@ -38,15 +40,24 @@ public class MainActivity extends AppCompatActivity implements  AsyncResponse {
 
     public void getWeather(View view) {
         Log.i("City Name", cityName.getText().toString());
-        String newCityName = cityName.getText().toString().replace(" ", "+");
-        Log.i("NEW City Name", newCityName);
+        //String newCityName = cityName.getText().toString().replace(" ", "+");
+        String newCityName = null;
+        try {
+            newCityName = URLEncoder.encode(cityName.getText().toString(), "UTF-8");
+            Log.i("NEW City Name", newCityName);
 
-        InputMethodManager manager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        manager.hideSoftInputFromWindow(cityName.getWindowToken(), 0);
+            InputMethodManager manager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            manager.hideSoftInputFromWindow(cityName.getWindowToken(), 0);
 
-        DownloadTask downloadTask = new DownloadTask();
-        downloadTask.delegate = this;
-        downloadTask.execute("http://api.openweathermap.org/data/2.5/weather?q=" + newCityName + "&APPID=6a0326b54ac62aae38ee842128683084");
+            DownloadTask downloadTask = new DownloadTask();
+            downloadTask.delegate = this;
+            downloadTask.execute("http://api.openweathermap.org/data/2.5/weather?q=" + newCityName + "&APPID=6a0326b54ac62aae38ee842128683084");
+
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+
     }
 
     @Override
