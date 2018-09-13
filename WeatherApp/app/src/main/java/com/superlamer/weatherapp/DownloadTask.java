@@ -2,6 +2,7 @@ package com.superlamer.weatherapp;
 
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -11,8 +12,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 public class DownloadTask extends AsyncTask <String, Void, String> {
+
+    public AsyncResponse delegate = null;
 
     @Override
     protected String doInBackground(String... urls) {
@@ -47,7 +53,11 @@ public class DownloadTask extends AsyncTask <String, Void, String> {
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
 
+
+        Map<String, String> weatherData = null;
+
         try {
+            weatherData = new HashMap<String, String>();
             JSONObject jsonObject = new JSONObject(result);
 
             // Get the weather conditions
@@ -55,26 +65,35 @@ public class DownloadTask extends AsyncTask <String, Void, String> {
             JSONArray weatherArr = new JSONArray(weatherInfo);
             for (int i = 0; i < weatherArr.length(); i++) {
                 JSONObject weatherJson = weatherArr.getJSONObject(i);
+
                 Log.i("main", weatherJson.getString("main"));
+                weatherData.put("main", weatherJson.getString("main"));
+
                 Log.i("Description", weatherJson.getString("description"));
+                weatherData.put("Description", weatherJson.getString("description"));
             }
 
             // Get the temps
             JSONObject tempInfo = jsonObject.getJSONObject("main");
             String currTemp = tempInfo.getString("temp");
+            Log.i("Current temp",  String.format("%.2f %s", convertKelvinToCelcius(currTemp), "\u2103"));
+            weatherData.put("currentTemp", String.format(Locale.US,"%.2f %s", convertKelvinToCelcius(currTemp), "\u2103"));
+
             String minTemp = tempInfo.getString("temp_min");
+            Log.i("Min temp",  String.format("%.2f %s", convertKelvinToCelcius(minTemp), "\u2103"));
+
             String maxTemp = tempInfo.getString("temp_max");
-            Log.i("Current temp",  String.format("%.2f %s", convertKelvinToFahrenheit(currTemp), "\u2103"));
-            Log.i("Min temp",  String.format("%.2f %s", convertKelvinToFahrenheit(minTemp), "\u2103"));
-            Log.i("Max temp", String.format("%.2f %s", convertKelvinToFahrenheit(maxTemp), "\u2103"));
+            Log.i("Max temp", String.format("%.2f %s", convertKelvinToCelcius(maxTemp), "\u2103"));
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+        delegate.processFinish(weatherData);
     }
 
-    private double convertKelvinToFahrenheit(String kelvin) {
+    private double convertKelvinToCelcius(String kelvin) {
         double k = Double.valueOf(kelvin);
-        return ((k * 9) / 5) - 459.67;
+        return k - 273.15;
     }
 }
