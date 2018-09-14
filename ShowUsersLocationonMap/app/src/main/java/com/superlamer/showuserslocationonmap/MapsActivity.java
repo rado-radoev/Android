@@ -74,6 +74,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onLocationChanged(Location location) {
                 currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                mMap.clear();
                 mMap.addMarker(new MarkerOptions().position(currentLocation).title("Current location"));
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 10));
             }
@@ -101,6 +102,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             } else {
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+
+                Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                LatLng currentLocation = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
+                mMap.clear();
+                mMap.addMarker(new MarkerOptions().position(currentLocation).title("Current location"));
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 10));
             }
         }
     }
