@@ -14,6 +14,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -36,43 +37,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        latitudeTextView = (TextView) findViewById(R.id.latitudeTextView);
-        longitudeTextView = (TextView) findViewById(R.id.longitudeTextView);
-        accuracyTextView = (TextView) findViewById(R.id.accuracyTextView);
-        altitudeTextView = (TextView) findViewById(R.id.altitudeTextView);
-        addressTextView = (TextView) findViewById(R.id.addressTextView);
-
-        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        locationListener = new LocationListener() {
-
-            Geocoder geocoder = null;
-            List<Address> addresses = null;
+            locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+            locationListener = new LocationListener() {
 
             @Override
             public void onLocationChanged(Location location) {
-                geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
-
-                try {
-                    addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-
-                    Address currentLoc = null;
-                    if (addresses != null && addresses.size() > 0) {
-                        currentLoc = addresses.get(0);
-                    }
-
-                    if (currentLoc != null) {
-                        latitudeTextView.setText(String.format(Locale.getDefault(),"%s: %f", "Latitude", location.getLatitude()));
-                        longitudeTextView.setText(String.format(Locale.getDefault(),"%s: %f", "Longitude", location.getLongitude()));
-                        accuracyTextView.setText(String.format(Locale.getDefault(),"%s: %f", "Accuracy", location.getAccuracy()));
-                        altitudeTextView.setText(String.format(Locale.getDefault(),"%s: %f", "Altitude", location.getAltitude()));
-
-                        if (currentLoc.getAddressLine(0) != null)
-                            addressTextView.setText(String.format(Locale.getDefault(), "%s: %s", "Address", currentLoc.getAddressLine(0)));
-                    }
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                updateLocation(location);
             }
 
             @Override
@@ -93,12 +63,17 @@ public class MainActivity extends AppCompatActivity {
 
 
         if (Build.VERSION.SDK_INT < 23) {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+            startListeningForLocation();
         } else {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             } else {
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+                startListeningForLocation();
+                Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+                if (location != null) {
+                    updateLocation(location);
+                }
             }
         }
     }
@@ -109,13 +84,52 @@ public class MainActivity extends AppCompatActivity {
 
         if (requestCode == 1) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-
-                    Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
-                }
+                startListeningForLocation();
             }
+        }
+    }
+
+    private void updateLocation(Location location) {
+
+        latitudeTextView = (TextView) findViewById(R.id.latitudeTextView);
+        longitudeTextView = (TextView) findViewById(R.id.longitudeTextView);
+        accuracyTextView = (TextView) findViewById(R.id.accuracyTextView);
+        altitudeTextView = (TextView) findViewById(R.id.altitudeTextView);
+        addressTextView = (TextView) findViewById(R.id.addressTextView);
+
+        Geocoder geocoder = null;
+        List<Address> addresses = null;
+
+        geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+
+        try {
+            addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+
+            Address currentLoc = null;
+            if (addresses != null && addresses.size() > 0) {
+                currentLoc = addresses.get(0);
+            }
+
+            if (currentLoc != null) {
+                latitudeTextView.setText(String.format(Locale.getDefault(),"%s: %f", "Latitude", location.getLatitude()));
+                longitudeTextView.setText(String.format(Locale.getDefault(),"%s: %f", "Longitude", location.getLongitude()));
+                accuracyTextView.setText(String.format(Locale.getDefault(),"%s: %f", "Accuracy", location.getAccuracy()));
+                altitudeTextView.setText(String.format(Locale.getDefault(),"%s: %f", "Altitude", location.getAltitude()));
+
+                if (currentLoc.getAddressLine(0) != null)
+                    addressTextView.setText(String.format(Locale.getDefault(), "%s: %s", "Address", currentLoc.getAddressLine(0)));
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Log.i("Location", location.toString());
+    }
+
+    private void startListeningForLocation() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
         }
     }
 }
