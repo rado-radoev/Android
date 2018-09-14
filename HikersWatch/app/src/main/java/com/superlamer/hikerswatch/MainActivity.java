@@ -66,7 +66,8 @@ public class MainActivity extends AppCompatActivity {
                         accuracyTextView.setText(String.format(Locale.getDefault(),"%s: %f", "Accuracy", location.getAccuracy()));
                         altitudeTextView.setText(String.format(Locale.getDefault(),"%s: %f", "Altitude", location.getAltitude()));
 
-                        addressTextView.setText(String.format(Locale.getDefault(), "%s: %s", "Address", currentLoc.getAddressLine(0)));
+                        if (currentLoc.getAddressLine(0) != null)
+                            addressTextView.setText(String.format(Locale.getDefault(), "%s: %s", "Address", currentLoc.getAddressLine(0)));
                     }
 
                 } catch (IOException e) {

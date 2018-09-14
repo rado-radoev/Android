@@ -44,7 +44,7 @@
         android:layout_below="@+id/longitudeTextView"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="30dp"
-        android:text="accuracyTextView" />
+        android:text="" />
 
     <TextView
         android:id="@+id/altitudeTextView"
@@ -54,7 +54,7 @@
         android:layout_below="@+id/accuracyTextView"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="30dp"
-        android:text="altitudeTextView" />
+        android:text="" />
 
     <TextView
         android:id="@+id/addressTextView"
@@ -64,5 +64,5 @@
         android:layout_below="@+id/altitudeTextView"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="30dp"
-        android:text="addressTextView" />
+        android:text="" />
 </RelativeLayout>
