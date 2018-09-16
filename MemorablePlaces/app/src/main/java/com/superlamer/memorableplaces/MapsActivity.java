@@ -3,6 +3,7 @@ package com.superlamer.memorableplaces;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -28,6 +29,7 @@ import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -70,6 +72,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         MainActivity.locations.add(latLng);
 
         MainActivity.arrayAdapter.notifyDataSetChanged();
+
+        SharedPreferences sharedPreferences = this.getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
+
+        try {
+            ArrayList<String> latitudes = new ArrayList<>();
+            ArrayList<String> longitudes = new ArrayList<>();
+
+            for (LatLng coordinates : MainActivity.locations) {
+                latitudes.add(Double.toString(coordinates.latitude));
+                longitudes.add(Double.toString(coordinates.longitude));
+            }
+
+            sharedPreferences.edit().putString("places", ObjectSerializer.serialize(MainActivity.places)).apply();
+            sharedPreferences.edit().putString("latitudes", ObjectSerializer.serialize(latitudes)).apply();
+            sharedPreferences.edit().putString("longitudes", ObjectSerializer.serialize(longitudes)).apply();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         Toast.makeText(this, "Location Saved", Toast.LENGTH_SHORT).show();
 
