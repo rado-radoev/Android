@@ -1,5 +1,7 @@
 package com.superlamer.alertspreferencesmenus;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -12,9 +14,10 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    ArrayList<String> languages = new ArrayList<>();
-    ListView languagesListView;
-    ArrayAdapter<String> arrayAdapter;
+    private ArrayList<String> languages = new ArrayList<>();
+    private ListView languagesListView;
+    private ArrayAdapter<String> arrayAdapter;
+    private SharedPreferences sharedPreferences;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -34,14 +37,16 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.english:
                 arrayAdapter.clear();
-                languages.add("English");
+                languages.add(item.getTitle().toString());
                 arrayAdapter.notifyDataSetChanged();
+                sharedPreferences.edit().putString("language", item.getTitle().toString()).apply();
                 successful = true;
                 break;
             case R.id.spanish:
                 arrayAdapter.clear();
-                languages.add("Spanish");
+                languages.add(item.getTitle().toString());
                 arrayAdapter.notifyDataSetChanged();
+                sharedPreferences.edit().putString("language", item.getTitle().toString()).apply();
                 successful = true;
                 break;
             default:
@@ -58,7 +63,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         languagesListView = (ListView) findViewById(R.id.languageListView);
+        sharedPreferences = this.getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
+
         arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, languages);
         languagesListView.setAdapter(arrayAdapter);
+
+        String storedLanguage = sharedPreferences.getString("language", "");
+        languages.add(storedLanguage);
+        arrayAdapter.notifyDataSetChanged();
+
     }
 }
