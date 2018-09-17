@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -32,18 +33,10 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        super.onOptionsItemSelected(item);
 
-        boolean successful = false;
 
-        arrayAdapter.clear();
-        languages.add(item.getTitle().toString());
-        arrayAdapter.notifyDataSetChanged();
-        sharedPreferences.edit().putString("language", item.getTitle().toString()).apply();
-        successful = true;
-
-        return successful;
-
+        setLanguage(item.getTitle().toString());
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -57,23 +50,19 @@ public class MainActivity extends AppCompatActivity {
         arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, languages);
         languagesListView.setAdapter(arrayAdapter);
 
-        new AlertDialog.Builder(this)
+        AlertDialog alertDialog = new AlertDialog.Builder(this)
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .setTitle("Language")
                 .setMessage("Please choose  your preferred language")
                 .setPositiveButton("Spanish", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        arrayAdapter.clear();
-                        languages.add("Spanish");
-                        sharedPreferences.edit().putString("language", "Spanish").apply();
+                        setLanguage("Spanish");
                     }
                 })
                 .setNegativeButton("English", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        arrayAdapter.clear();
-                        languages.add("English");
-                        sharedPreferences.edit().putString("language", "English").apply();
+                        setLanguage("English");
                     }
                 })
                 .setNeutralButton("No change", null)
@@ -84,5 +73,12 @@ public class MainActivity extends AppCompatActivity {
         languages.add(storedLanguage);
         arrayAdapter.notifyDataSetChanged();
 
+    }
+
+    private void setLanguage(String language) {
+        arrayAdapter.clear();
+        languages.add(language);
+        sharedPreferences.edit().putString("language", language).apply();
+        arrayAdapter.notifyDataSetChanged();
     }
 }
