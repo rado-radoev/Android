@@ -39,7 +39,7 @@ public class NotesActivity extends AppCompatActivity {
         Intent intent = getIntent();
         setNoteId(intent.getIntExtra("noteId", -1));
 
-        if (noteId == -1) {
+        if (getNoteId() == -1) {
             getNoteText().setText("");
         } else {
             getNoteText().setText(MainActivity.getNotesList().get(noteId).toString());
@@ -55,10 +55,13 @@ public class NotesActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (getNoteId() == -1 && MainActivity.getNotesList().size() > 1) {
-                    setNoteId(MainActivity.getNotesList().size() - 1);
+                if (getNoteId() == -1) {
+                    setNoteId(MainActivity.getNotesList().size());
+                    MainActivity.getNotesList().add(getNoteId(), s.toString());
+                } else {
+                    MainActivity.getNotesList().set(getNoteId(), s.toString());
                 }
-                MainActivity.getNotesList().set(getNoteId(), s.toString());
+
                 MainActivity.getArrayAdapter().notifyDataSetChanged();
             }
 
