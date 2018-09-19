@@ -1,8 +1,10 @@
 package com.superlamer.notes3;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -13,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,8 +82,23 @@ public class MainActivity extends AppCompatActivity {
 
         setNotesList(new ArrayList<String>());
         setNotesListView((ListView) findViewById(R.id.notesListView));
-        setArrayAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, getNotesList()));
 
+
+
+        SharedPreferences sharedPreferences = getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
+        ArrayList<String> notes = null;
+        try {
+            notes = (ArrayList<String>) ObjectSerializer.deserialize(sharedPreferences.getString("notes", ObjectSerializer.serialize(new ArrayList<String>())));
+            if (notes.size() == 0) {
+                notes.add("Example Note");
+            }
+            setNotesList(notes);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        setArrayAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, getNotesList()));
         getNotesListView().setAdapter(getArrayAdapter());
 
         //region Note ListView on Item Click Listener
@@ -106,7 +124,14 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 getNotesList().remove(position);
-                                getArrayAdapter().notifyDataSetChanged();
+
+                                SharedPreferences sharedPreferences = getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
+                                try {
+                                    sharedPreferences.edit().putString("notes", ObjectSerializer.serialize(getNotesList())).apply();
+                                    getArrayAdapter().notifyDataSetChanged();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
                             }
                         })
                         .setNegativeButton("No", null)
@@ -116,11 +141,5 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         //endregion
-
-
-        if (getNotesList().size() == 0) {
-            getNotesList().add("Example Note");
-            getArrayAdapter().notifyDataSetChanged();
-        }
     }
 }

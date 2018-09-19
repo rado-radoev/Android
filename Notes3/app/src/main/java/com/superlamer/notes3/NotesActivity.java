@@ -1,11 +1,15 @@
 package com.superlamer.notes3;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.EditText;
+
+import java.io.IOException;
 
 public class NotesActivity extends AppCompatActivity {
 
@@ -45,8 +49,6 @@ public class NotesActivity extends AppCompatActivity {
             getNoteText().setText(MainActivity.getNotesList().get(noteId).toString());
         }
 
-
-
         getNoteText().addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -60,6 +62,13 @@ public class NotesActivity extends AppCompatActivity {
                     MainActivity.getNotesList().add(getNoteId(), s.toString());
                 } else {
                     MainActivity.getNotesList().set(getNoteId(), s.toString());
+                }
+
+                SharedPreferences sharedPreferences = getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
+                try {
+                    sharedPreferences.edit().putString("notes", ObjectSerializer.serialize(MainActivity.getNotesList())).apply();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
 
                 MainActivity.getArrayAdapter().notifyDataSetChanged();
