@@ -26,7 +26,8 @@
         android:ems="10"
         android:gravity="left"
         android:hint="Enter username ..."
-        android:inputType="textPersonName" />
+        android:inputType="textPersonName"
+        android:imeOptions="actionDone"/>
 
     <EditText
         android:id="@+id/passwordTextField"
@@ -38,7 +39,8 @@
         android:ems="10"
         android:gravity="left"
         android:hint="Enter password ..."
-        android:inputType="textPassword" />
+        android:inputType="textPassword"
+        android:imeOptions="actionDone"/>
 
     <Button
         android:id="@+id/loginButton"

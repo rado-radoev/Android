@@ -3,7 +3,10 @@ package com.superlamer.instagramclone;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -15,7 +18,7 @@ import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
-public class LoginActivity extends AppCompatActivity implements  View.OnClickListener {
+public class LoginActivity extends AppCompatActivity implements  View.OnClickListener, View.OnKeyListener{
 
     private EditText userNameTextField;
     private EditText passwordTextField;
@@ -23,6 +26,16 @@ public class LoginActivity extends AppCompatActivity implements  View.OnClickLis
     private Button signupLoginButton;
     private ImageView instagramLogo;
     private boolean signUpModeActive = true;
+
+    @Override
+    public boolean onKey(View v, int keyCode, KeyEvent event) {
+
+        if (keyCode == KeyEvent.KEYCODE_ENTER) {
+            signUp(v);
+        }
+
+        return false;
+    }
 
     @Override
     public void onClick(View v) {
@@ -49,13 +62,18 @@ public class LoginActivity extends AppCompatActivity implements  View.OnClickLis
         setContentView(R.layout.activity_login);
 
         userNameTextField = findViewById(R.id.usernameTextField);
+        userNameTextField.setOnClickListener(this);
         passwordTextField = findViewById(R.id.passwordTextField);
+        passwordTextField.setOnClickListener(this);
+
         signupOrLoginTextField = findViewById(R.id.signupOrLoginTextField);
         signupOrLoginTextField.setOnClickListener(this);
 
 
         signupLoginButton = findViewById(R.id.loginButton);
         instagramLogo = findViewById(R.id.instragramLogo);
+
+
     }
 
 
