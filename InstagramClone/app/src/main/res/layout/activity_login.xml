@@ -7,7 +7,7 @@
     tools:context=".LoginActivity">
 
     <ImageView
-        android:id="@+id/imageView3"
+        android:id="@+id/instragramLogo"
         android:layout_width="match_parent"
         android:layout_height="150dp"
         android:layout_alignParentTop="true"
@@ -21,7 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/imageView3"
+        android:layout_below="@+id/instragramLogo"
         android:layout_marginTop="30dp"
         android:ems="10"
         android:gravity="left"
@@ -47,6 +47,7 @@
         android:layout_below="@+id/passwordTextField"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
+        android:onClick="signUp"
         android:text="Signup" />
 
     <TextView
@@ -56,5 +57,7 @@
         android:layout_alignBaseline="@+id/loginButton"
         android:layout_marginLeft="15dp"
         android:layout_toEndOf="@+id/loginButton"
+        android:clickable="true"
+        android:textColor="@android:color/holo_blue_bright"
         android:text="Or, Login" />
 </RelativeLayout>

@@ -43,13 +43,13 @@ public class MainActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
 
-      ParseUser.logOut();
-
-      if (ParseUser.getCurrentUser() != null) {
-        Log.i("currentUser", "User logged in " + ParseUser.getCurrentUser().getUsername());
-    } else {
-        Log.i("currentUser", "User not logged in");
-    }
+//      ParseUser.logOut();
+//
+//      if (ParseUser.getCurrentUser() != null) {
+//        Log.i("currentUser", "User logged in " + ParseUser.getCurrentUser().getUsername());
+//    } else {
+//        Log.i("currentUser", "User not logged in");
+//    }
 
 
 
@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
     */
 
 
-    /* Creating new user
+    //Creating new user
     ParseUser user = new ParseUser();
     user.setUsername("rado");
     user.setPassword("rado");
@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     });
-    */
+
 
     ParseAnalytics.trackAppOpenedInBackground(getIntent());
   }
