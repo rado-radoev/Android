@@ -10,6 +10,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,7 +19,10 @@ import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
-public class LoginActivity extends AppCompatActivity implements  View.OnClickListener, View.OnKeyListener{
+import java.security.Key;
+
+
+public class LoginActivity extends AppCompatActivity implements  View.OnClickListener {
 
     private EditText userNameTextField;
     private EditText passwordTextField;
@@ -26,20 +30,12 @@ public class LoginActivity extends AppCompatActivity implements  View.OnClickLis
     private Button signupLoginButton;
     private ImageView instagramLogo;
     private boolean signUpModeActive = true;
+    private RelativeLayout backgroundRelativeLayout;
 
-    @Override
-    public boolean onKey(View v, int keyCode, KeyEvent event) {
-
-        if (keyCode == KeyEvent.KEYCODE_ENTER) {
-            signUp(v);
-        }
-
-        return false;
-    }
-
-    @Override
+     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.signupOrLoginTextField) {
+
+         if (v.getId() == R.id.signupOrLoginTextField) {
             Log.i("AppInfo", "change signup mode");
             if (signUpModeActive) {
                 signUpModeActive = false;
@@ -51,9 +47,15 @@ public class LoginActivity extends AppCompatActivity implements  View.OnClickLis
                 signupOrLoginTextField.setText("Or, Login");
             }
 
-            userNameTextField.setText("");
-            passwordTextField.setText("");
-        }
+             userNameTextField.setText("");
+             passwordTextField.setText("");
+             
+        } else if (v.getId() == R.id.backgroundRelativeLayout || v.getId() == R.id.instragramLogo) {
+             InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                 inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+         }
+
+
      }
 
     @Override
@@ -61,19 +63,28 @@ public class LoginActivity extends AppCompatActivity implements  View.OnClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        instantiateLayoutObjs();
+    }
+
+    private final void instantiateLayoutObjs() {
+
         userNameTextField = findViewById(R.id.usernameTextField);
-        userNameTextField.setOnClickListener(this);
+        userNameTextField.setOnKeyListener(new KeyHandler());
+
         passwordTextField = findViewById(R.id.passwordTextField);
-        passwordTextField.setOnClickListener(this);
+        passwordTextField.setOnKeyListener(new KeyHandler());
 
         signupOrLoginTextField = findViewById(R.id.signupOrLoginTextField);
         signupOrLoginTextField.setOnClickListener(this);
 
 
         signupLoginButton = findViewById(R.id.loginButton);
+
         instagramLogo = findViewById(R.id.instragramLogo);
+        instagramLogo.setOnClickListener(this);
 
-
+        backgroundRelativeLayout = findViewById(R.id.backgroundRelativeLayout);
+        backgroundRelativeLayout.setOnClickListener(this);
     }
 
 
@@ -157,4 +168,22 @@ public class LoginActivity extends AppCompatActivity implements  View.OnClickLis
         return signUpSuccessful[0];
     }
 
+
+    class KeyHandler implements View.OnKeyListener {
+
+        @Override
+        public boolean onKey(View v, int keyCode, KeyEvent event) {
+
+            if (keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN) {
+                Log.i("Enter", "Pressed");
+                signUp(v);
+                return true;
+            }
+
+            return false;
+        }
+    }
+
 }
+
+

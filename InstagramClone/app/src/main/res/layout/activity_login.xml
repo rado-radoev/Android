@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/backgroundRelativeLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".LoginActivity">
@@ -26,8 +27,8 @@
         android:ems="10"
         android:gravity="left"
         android:hint="Enter username ..."
-        android:inputType="textPersonName"
-        android:imeOptions="actionDone"/>
+        android:imeOptions="actionDone"
+        android:inputType="textPersonName" />
 
     <EditText
         android:id="@+id/passwordTextField"
@@ -39,8 +40,8 @@
         android:ems="10"
         android:gravity="left"
         android:hint="Enter password ..."
-        android:inputType="textPassword"
-        android:imeOptions="actionDone"/>
+        android:imeOptions="actionDone"
+        android:inputType="textPassword" />
 
     <Button
         android:id="@+id/loginButton"
@@ -60,6 +61,6 @@
         android:layout_marginLeft="15dp"
         android:layout_toEndOf="@+id/loginButton"
         android:clickable="true"
-        android:textColor="@android:color/holo_blue_bright"
-        android:text="Or, Login" />
+        android:text="Or, Login"
+        android:textColor="@android:color/holo_blue_bright" />
 </RelativeLayout>
