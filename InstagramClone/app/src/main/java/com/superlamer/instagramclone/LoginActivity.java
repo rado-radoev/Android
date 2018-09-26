@@ -1,5 +1,8 @@
 package com.superlamer.instagramclone;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,6 +34,7 @@ public class LoginActivity extends AppCompatActivity implements  View.OnClickLis
     private ImageView instagramLogo;
     private boolean signUpModeActive = true;
     private RelativeLayout backgroundRelativeLayout;
+    private SharedPreferences sharedPreferences;
 
      @Override
     public void onClick(View v) {
@@ -47,9 +51,6 @@ public class LoginActivity extends AppCompatActivity implements  View.OnClickLis
                 signupOrLoginTextField.setText("Or, Login");
             }
 
-             userNameTextField.setText("");
-             passwordTextField.setText("");
-             
         } else if (v.getId() == R.id.backgroundRelativeLayout || v.getId() == R.id.instragramLogo) {
              InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                  inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
@@ -64,12 +65,23 @@ public class LoginActivity extends AppCompatActivity implements  View.OnClickLis
         setContentView(R.layout.activity_login);
 
         instantiateLayoutObjs();
+
+        Log.i("Loggedin user", ParseUser.getCurrentUser().getUsername());
+        if (ParseUser.getCurrentUser() != null) {
+            displayUserList();
+        }
+    }
+
+
+    private void displayUserList() {
+        Intent intent = new Intent(this, UserList.class);
+        startActivity(intent);
     }
 
     private final void instantiateLayoutObjs() {
 
         userNameTextField = findViewById(R.id.usernameTextField);
-        userNameTextField.setOnKeyListener(new KeyHandler());
+        //raduserNameTextField.setOnKeyListener(new KeyHandler());
 
         passwordTextField = findViewById(R.id.passwordTextField);
         passwordTextField.setOnKeyListener(new KeyHandler());
@@ -85,6 +97,8 @@ public class LoginActivity extends AppCompatActivity implements  View.OnClickLis
 
         backgroundRelativeLayout = findViewById(R.id.backgroundRelativeLayout);
         backgroundRelativeLayout.setOnClickListener(this);
+
+        sharedPreferences = this.getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
     }
 
 
@@ -94,7 +108,6 @@ public class LoginActivity extends AppCompatActivity implements  View.OnClickLis
         } else {
             userLogin(userNameTextField.getText().toString(), passwordTextField.getText().toString());
         }
-
     }
 
 
@@ -109,7 +122,7 @@ public class LoginActivity extends AppCompatActivity implements  View.OnClickLis
         return isFieldEmpty;
     }
 
-    private boolean userLogin(String userName, String password) {
+    private boolean userLogin(final String userName, final String password) {
 
         final boolean[] loginSuccessful = new boolean[1];
         loginSuccessful[0] = false;
@@ -122,6 +135,9 @@ public class LoginActivity extends AppCompatActivity implements  View.OnClickLis
                         Log.i("Login", "Successful");
                         Toast.makeText(getApplicationContext(), "Login Successful", Toast.LENGTH_SHORT).show();
                         loginSuccessful[0] = true;
+                        sharedPreferences.edit().putString("username", userName).apply();
+                        sharedPreferences.edit().putString("password", password).apply();
+                        displayUserList();
                     } else {
                         Log.i("Login", "Failed: " + e.toString());
                         Toast.makeText(getApplicationContext(), "Login Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -137,7 +153,7 @@ public class LoginActivity extends AppCompatActivity implements  View.OnClickLis
     }
 
 
-    private boolean userSignUp(String userName, String password) {
+    private boolean userSignUp(String userName, final String password) {
 
         final boolean[] signUpSuccessful = new boolean[1];
         signUpSuccessful[0] = false;
@@ -147,6 +163,9 @@ public class LoginActivity extends AppCompatActivity implements  View.OnClickLis
             user.setUsername(userName);
             user.setPassword(password);
 
+            final String usr = userName;
+            final String pswd = password;
+
             user.signUpInBackground(new SignUpCallback() {
                 @Override
                 public void done(ParseException e) {
@@ -154,6 +173,9 @@ public class LoginActivity extends AppCompatActivity implements  View.OnClickLis
                         Log.i("Sign up", "Successful");
                         Toast.makeText(getApplicationContext(), "SingUp Successful", Toast.LENGTH_SHORT).show();
                         signUpSuccessful[0] = true;
+                        sharedPreferences.edit().putString("username", usr).apply();
+                        sharedPreferences.edit().putString("password", password).apply();
+                        displayUserList();
                     } else {
                         Log.i("Sign up", "Failed: " + e.toString());
                         Toast.makeText(getApplicationContext(), "SignUp Failed" + e.getMessage(), Toast.LENGTH_SHORT).show();
