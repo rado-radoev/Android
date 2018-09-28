@@ -14,12 +14,15 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.parse.FindCallback;
+import com.parse.LogOutCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
@@ -121,7 +124,22 @@ public class UserList extends AppCompatActivity {
             } else {
                 getPhoto();
             }
+        } else if (item.getItemId() == R.id.logout) {
+            ParseUser.logOutInBackground(new LogOutCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if (e == null) {
+                        Toast.makeText(UserList.this, "Logout successful", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(getApplication(), LoginActivity.class);
+                        startActivity(intent);
+                    } else {
+                        Toast.makeText(UserList.this, "Logout fialed. Try again!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
         }
+        
+        
 
         return super.onOptionsItemSelected(item);
     }
@@ -131,10 +149,21 @@ public class UserList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_list);
 
-        userListView = (ListView) findViewById(R.id.userListView);
         final ArrayList<String> usernames = new ArrayList<>();
         usernames.add("test");
+
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, usernames);
+
+        userListView = (ListView) findViewById(R.id.userListView);
+
+        userListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getApplicationContext(), UserImages.class);
+                intent.putExtra("username", usernames.get(position));
+                startActivity(intent);
+            }
+        });
 
         ParseQuery<ParseUser> query = ParseUser.getQuery();
 
