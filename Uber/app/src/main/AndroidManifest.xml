@@ -39,7 +39,11 @@
 
         <activity
             android:name=".RiderActivity"
-            android:label="@string/title_activity_maps"></activity>
+            android:label="@string/title_activity_maps" />
+        <activity android:name=".DriverRequests" />
+        <activity
+            android:name=".DriverActivity"
+            android:label="@string/title_activity_driver"></activity>
     </application>
 
 </manifest>
