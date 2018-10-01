@@ -42,4 +42,8 @@ public class MainActivity extends AppCompatActivity {
     ParseAnalytics.trackAppOpenedInBackground(getIntent());
   }
 
+  public void getStarted(View view) {
+
+  }
+
 }
