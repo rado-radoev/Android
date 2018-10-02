@@ -2,6 +2,7 @@ package com.superlamer.uber;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -41,7 +42,6 @@ public class RiderActivity extends FragmentActivity implements OnMapReadyCallbac
     private LocationManager locationManager;
     private LocationListener locationListener;
     private boolean isRequestActive;
-
 
     private void updateLocation(Location location) {
         LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
@@ -180,6 +180,12 @@ public class RiderActivity extends FragmentActivity implements OnMapReadyCallbac
                 }
             }
         }
+    }
+
+    public void logout(View view) {
+        ParseUser.logOut();
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 
 }

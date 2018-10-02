@@ -11,15 +11,11 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.parse.LogInCallback;
-import com.parse.Parse;
 import com.parse.ParseAnalytics;
 import com.parse.ParseAnonymousUtils;
 import com.parse.ParseException;
-import com.parse.ParseObject;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
-
-import java.sql.Driver;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(getApplicationContext(), RiderActivity.class);
             startActivity(intent);
         } else {
-            Intent intent = new Intent(getApplicationContext(), DriverRequests.class);
+            Intent intent = new Intent(getApplicationContext(), ViewRequestsActivity.class);
             startActivity(intent);
         }
     }
