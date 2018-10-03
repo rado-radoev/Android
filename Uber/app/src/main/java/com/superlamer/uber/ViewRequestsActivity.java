@@ -25,6 +25,7 @@ import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +42,8 @@ public class ViewRequestsActivity extends AppCompatActivity {
     private ArrayList<Double> requestLatitudes = new ArrayList<Double>();
     private ArrayList<Double> requestLongitudes = new ArrayList<Double>();
     private ArrayList<String> usernames = new ArrayList<String>();
+    private ParseGeoPoint parseGeoPoint;
+    private ParseObject driverData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +51,9 @@ public class ViewRequestsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_view_requests);
 
         setTitle("Nearby Requests");
+
+        driverData = new ParseObject("Driver");
+        driverData.put("username", ParseUser.getCurrentUser().getUsername());
 
         requestListView = (ListView) findViewById(R.id.requestListView);
 
@@ -77,9 +83,9 @@ public class ViewRequestsActivity extends AppCompatActivity {
                     }
                 }
 
-
             }
         });
+
 
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
@@ -184,7 +190,9 @@ public class ViewRequestsActivity extends AppCompatActivity {
                 }
             });
 
-
+            parseGeoPoint = new ParseGeoPoint(location.getLatitude(), location.getLongitude());
+            driverData.put("location", parseGeoPoint);
+            driverData.saveInBackground();
         }
 
 

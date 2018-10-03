@@ -42,6 +42,7 @@ public class RiderActivity extends FragmentActivity implements OnMapReadyCallbac
     private LocationManager locationManager;
     private LocationListener locationListener;
     private boolean isRequestActive;
+    Location loc;
 
     private void updateLocation(Location location) {
         LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
@@ -73,6 +74,8 @@ public class RiderActivity extends FragmentActivity implements OnMapReadyCallbac
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+
+
         requestBtn = (Button) findViewById(R.id.requestBtn);
         ParseQuery<ParseObject> query= new ParseQuery<ParseObject>("Request");
         query.whereEqualTo("username", ParseUser.getCurrentUser().getUsername());
@@ -82,6 +85,28 @@ public class RiderActivity extends FragmentActivity implements OnMapReadyCallbac
                 if (e == null && objects.size() > 0) {
                     isRequestActive = true;
                     requestBtn.setText("Cancel Uber");
+
+                    for (ParseObject object : objects) {
+                        if (object.get("driverUsername") != null && !object.get("driverUsername").equals("") && object.get("driverUsername").toString().length() > 0) {
+                            ParseQuery<ParseObject> driver = ParseQuery.getQuery("Driver");
+                            driver.whereEqualTo("username", object.get("driverUsername"));
+                            driver.setLimit(1);
+                            driver.findInBackground(new FindCallback<ParseObject>() {
+                                @Override
+                                public void done(List<ParseObject> objects, ParseException e) {
+                                    if (e == null) {
+                                        for (ParseObject obj : objects) {
+                                            loc = new Location("");
+                                            loc.setLatitude(obj.getParseGeoPoint("location").getLatitude());
+                                            loc.setLongitude(obj.getParseGeoPoint("location").getLongitude());
+                                            updateLocation(loc);
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    }
+
                 }
             }
         });
@@ -184,8 +209,33 @@ public class RiderActivity extends FragmentActivity implements OnMapReadyCallbac
 
     public void logout(View view) {
         ParseUser.logOut();
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-    }
+        isRequestActive = false;
 
+        if (!isRequestActive) {
+            ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Request");
+            query.whereEqualTo("username", ParseUser.getCurrentUser().getUsername());
+            query.findInBackground(new FindCallback<ParseObject>() {
+                @Override
+                public void done(List<ParseObject> objects, ParseException e) {
+                    if (e == null && objects.size() > 0) {
+                        for (ParseObject object : objects) {
+                            object.deleteInBackground(new DeleteCallback() {
+                                @Override
+                                public void done(ParseException e) {
+                                    if (e != null) {
+                                        Toast.makeText(getApplicationContext(), "Cannot cancel request", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Toast.makeText(getApplicationContext(), "Request cancelled", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                        }
+                    }
+                }
+            });
+
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+        }
+    }
 }
