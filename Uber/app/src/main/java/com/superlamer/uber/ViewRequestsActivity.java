@@ -190,8 +190,7 @@ public class ViewRequestsActivity extends AppCompatActivity {
                 }
             });
 
-            parseGeoPoint = new ParseGeoPoint(location.getLatitude(), location.getLongitude());
-            driverData.put("location", parseGeoPoint);
+            driverData.put("location", new ParseGeoPoint(location.getLatitude(), location.getLongitude()));
             driverData.saveInBackground();
         }
 
