@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.sun.tools.javac.util.Log;
 
 public class FlappyBird extends ApplicationAdapter {
 	SpriteBatch batch;
@@ -24,6 +25,10 @@ public class FlappyBird extends ApplicationAdapter {
 
 	@Override
 	public void render () {
+//
+//	    if (Gdx.input.justTouched()) {
+//            Gdx.app.log("Touched", "Yep!");
+//        }
 
 	    if (flapState == 0) {
 	        flapState = 1;
