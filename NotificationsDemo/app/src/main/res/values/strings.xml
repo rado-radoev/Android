@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Notifications Demo</string>
+    <string name="test">Hello World from Rado!</string>
+</resources>
