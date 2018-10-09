@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         try {
-            List<ParseUser> users = allUsers();
+            List<String> users = allUsers();
 //            Intent intent = new Intent(getApplicationContext(), UserList.class);
 //            intent.putExtra("users", ObjectSerializer.serialize(usrs));
 //            startActivity(intent);
@@ -162,18 +162,23 @@ public class MainActivity extends AppCompatActivity {
         return loginSuccessful[0];
     }
 
-    private List<ParseUser> allUsers() {
+    private List<String> allUsers() {
         ParseQuery<ParseUser> query = ParseUser.getQuery();
         query.whereNotEqualTo("username", ParseUser.getCurrentUser().getUsername());
 
-        final List<ParseUser> users = new ArrayList<>();
+        final List<String> users = new ArrayList<>();
         final JSONArray jsonArray = new JSONArray();
         query.findInBackground(new FindCallback<ParseUser>() {
+
             @Override
             public void done(List<ParseUser> objects, ParseException e) {
+                Log.i("Info", "Inside findcallback");
                 if (e == null) {
+                    Log.i("Info", "Not null");
                     for (ParseUser obj : objects) {
-                        users.add(obj);
+                        Log.i("Info", "Parsing: " + obj.getUsername());
+                        users.add(obj.getUsername());
+                        Log.i("Info", "added to users array");
                     }
                 } else {
                     Log.i("Info", "Error occured: " + e.getMessage());
@@ -181,6 +186,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        Log.i("Info", "array size is: " + users.size());
+        for (String usr : users) {
+            Log.i("Info", "Usernam: " + usr + " is in arraylist");
+        }
         return users;
     }
 
