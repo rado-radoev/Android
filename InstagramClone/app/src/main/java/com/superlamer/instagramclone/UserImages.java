@@ -83,7 +83,7 @@ public class UserImages extends AppCompatActivity {
 //
 //        imageView.setImageDrawable(getResources().getDrawable(R.drawable.instagram_app_logo));
 //
-//        userPhotosLayout.addView(imageView);
+//        userPhotosLayout.addView(imageView);s
     }
 
 }

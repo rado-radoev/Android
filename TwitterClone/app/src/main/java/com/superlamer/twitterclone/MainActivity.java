@@ -1,5 +1,6 @@
 package com.superlamer.twitterclone;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,16 +9,29 @@ import android.widget.EditText;
 import android.view.View;
 import android.widget.Toast;
 
+import com.parse.FindCallback;
+import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 import com.parse.SignUpCallback;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private EditText username;
     private EditText password;
     private SharedPreferences sharedPreferences;
+    Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,13 +42,8 @@ public class MainActivity extends AppCompatActivity {
 
         setUsername(findViewById(R.id.usernameTextField));
         setPasswrod(findViewById(R.id.passwordTextField));
+        sharedPreferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
 
-        if (ParseObject.)
-
-        // Signup new user
-        if (ParseUser.getCurrentUser() == null) {
-
-        }
     }
 
     private boolean isFieldEmpty(EditText textField) {
@@ -58,14 +67,39 @@ public class MainActivity extends AppCompatActivity {
         return isUserLoggedIn;
     }
 
+    public void signupLogin(View view) {
 
-    private boolean userSignUp(String username, int[] password) {
+        ParseQuery<ParseUser> query = ParseUser.getQuery();
+        query.whereEqualTo("username", getUsername().getText().toString());
+        query.setLimit(1);
+        query.findInBackground(new FindCallback<ParseUser>() {
+            @Override
+            public void done(List<ParseUser> objects, ParseException e) {
+                if (objects.size() > 0 && e == null) {
+                    userLogIn();
+                } else {
+                    userSignUp();
+                }
+            }
+        });
+
+        try {
+            List<ParseUser> users = allUsers();
+//            Intent intent = new Intent(getApplicationContext(), UserList.class);
+//            intent.putExtra("users", ObjectSerializer.serialize(usrs));
+//            startActivity(intent);
+        } catch (Exception ioe) {
+            ioe.printStackTrace();
+        }
+    }
+
+
+    private boolean userSignUp() {
         final boolean[] signupSuccessful = new boolean[1];
         signupSuccessful[0] = false;
 
-        if (isFieldEmpty(getUsername()) && isFieldEmpty(getPasswrod()) &&
-                !isUserLoggedIn()) { // username filed has text
-            ParseUser user = new ParseUser();
+        if (!isFieldEmpty(getUsername()) && !isFieldEmpty(getPasswrod())) { // username filed has text
+            final ParseUser user = new ParseUser();
             user.setUsername(getUsername().getText().toString());
             user.setPassword(getPasswrod().getText().toString());
             
@@ -76,7 +110,18 @@ public class MainActivity extends AppCompatActivity {
                         Log.i("Info", "Sign up successful");
                         Toast.makeText(MainActivity.this, "Sign up successful!", Toast.LENGTH_SHORT).show();
                         signupSuccessful[0] = true;
-                        sharedPreferences.edit().putString("username", getUsername().toString());
+                        sharedPreferences.edit().putString("username", getUsername().getText().toString());
+                        user.put("follows", new JSONArray());
+                        user.saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(ParseException e) {
+                                if (e == null) {
+                                    Log.i("Info", "follows column added");
+                                } else {
+                                    Log.i("Info", "follows column NOT added");
+                                }
+                            }
+                        });
                         // dispalyListOfUsers();
                     } else {
                         Log.i("Error", "Sing up unsuccessful!");
@@ -92,6 +137,95 @@ public class MainActivity extends AppCompatActivity {
         return signupSuccessful[0];
     }
 
+    private boolean userLogIn() {
+        final boolean[] loginSuccessful = new boolean[1];
+        loginSuccessful[0] = false;
+
+        if (!isFieldEmpty(getUsername()) && !isFieldEmpty(getPasswrod())) {
+            ParseUser.logInInBackground(getUsername().getText().toString(), getPasswrod().getText().toString(), new LogInCallback() {
+                @Override
+                public void done(ParseUser user, ParseException e) {
+                    if (e == null) {
+                        Log.i("Login", "Successful");
+                        Toast.makeText(MainActivity.this, "Login successful", Toast.LENGTH_SHORT).show();
+                        sharedPreferences.edit().putString("username", getUsername().getText().toString());
+                        loginSuccessful[0] = true;
+                    } else {
+                        Log.i("Login", "Failed");
+                        Toast.makeText(MainActivity.this, "Login fialed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        loginSuccessful[0] = false;
+                    }
+                }
+            });
+        }
+
+        return loginSuccessful[0];
+    }
+
+    private List<ParseUser> allUsers() {
+        ParseQuery<ParseUser> query = ParseUser.getQuery();
+        query.whereNotEqualTo("username", ParseUser.getCurrentUser().getUsername());
+
+        final List<ParseUser> users = new ArrayList<>();
+        final JSONArray jsonArray = new JSONArray();
+        query.findInBackground(new FindCallback<ParseUser>() {
+            @Override
+            public void done(List<ParseUser> objects, ParseException e) {
+                if (e == null) {
+                    for (ParseUser obj : objects) {
+                        users.add(obj);
+                    }
+                } else {
+                    Log.i("Info", "Error occured: " + e.getMessage());
+                }
+            }
+        });
+
+        return users;
+    }
+
+
+    private JSONArray getAllUsers() {
+        ParseQuery<ParseUser> query = ParseUser.getQuery();
+        query.whereNotEqualTo("username", ParseUser.getCurrentUser().getUsername());
+
+        final JSONArray jsonArray = new JSONArray();
+        query.findInBackground(new FindCallback<ParseUser>() {
+            @Override
+            public void done(List<ParseUser> objects, ParseException e) {
+                if (e == null && objects.size() > 0) {
+                    JSONObject jsonObject;
+                    for (int i = 0; i < objects.size(); i++) {
+                        try {
+                            jsonObject = new JSONObject();
+                            jsonObject.put("name", objects.get(i).getUsername());
+                            jsonArray.put(i, jsonObject);
+                        } catch (JSONException e1) {
+                            e1.printStackTrace();
+                        }
+                    }
+                } else {
+                    Log.i("Info", "Error occured: " + e.getMessage());
+                }
+            }
+        });
+
+        return jsonArray;
+    }
+
+
+    private ArrayList<String> convertJSONToArrayList(JSONArray jsonArray) {
+        ArrayList<String> users = new ArrayList<>();
+        for (int i = 0; i < jsonArray.length(); i++) {
+            try {
+                users.add(jsonArray.getString(i));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return  users;
+    }
 
 
 
@@ -100,7 +234,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void setUsername(View view) {
-        this.username = username;
+        this.username = (EditText) view;
     }
 
     public EditText getPasswrod() {
@@ -108,6 +242,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void setPasswrod(View view) {
-        this.password = password;
+        this.password = (EditText) view;
     }
 }
