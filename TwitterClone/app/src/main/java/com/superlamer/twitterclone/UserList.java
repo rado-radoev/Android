@@ -13,11 +13,14 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckedTextView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
+import com.parse.ParseRelation;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 import com.superlamer.twitterclone.ObjectSerializer;
 import com.superlamer.twitterclone.R;
 
@@ -57,6 +60,32 @@ public class UserList extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private boolean validateTweetSize(String tweet) {
+        int TWEET_MAX_LENGTH = 240;
+        boolean tweetLengthInRnage = false;
+
+        if (tweet.length() <= TWEET_MAX_LENGTH) {
+            tweetLengthInRnage = true;
+        }
+
+        return tweetLengthInRnage;
+    }
+
+    public void addTweet(String newTweet) {
+        int numberOfTweets = ParseUser.getCurrentUser().getList("tweets").size();
+        ParseUser.getCurrentUser().getList("tweets").add(++numberOfTweets, newTweet);
+        ParseUser.getCurrentUser().saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e == null) {
+                    Toast.makeText(UserList.this, "Tweet posted!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(UserList.this, "Tweet cannot be tweeted! Try again!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     @Override

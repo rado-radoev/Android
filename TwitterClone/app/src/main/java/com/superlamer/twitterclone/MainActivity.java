@@ -126,6 +126,7 @@ public class MainActivity extends AppCompatActivity {
                         sharedPreferences.edit().putString("username", getUsername().getText().toString());
 
                         user.put("follows", new JSONArray());
+                        user.put("tweets", new JSONArray());
 
                         user.saveInBackground(new SaveCallback() {
                             @Override
