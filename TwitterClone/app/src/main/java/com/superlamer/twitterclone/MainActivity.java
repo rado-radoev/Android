@@ -47,6 +47,24 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void redirect() {
+        if (ParseUser.getCurrentUser() != null) {
+            ParseUser.logInInBackground(getUsername().getText().toString(), getPasswrod().getText().toString(), new LogInCallback() {
+                @Override
+                public void done(ParseUser user, ParseException e) {
+                    if (e == null) {
+                        Toast.makeText(MainActivity.this, "Logged in", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(getApplicationContext(), UserList.class);
+                        startActivity(intent);
+                    } else {
+                        Toast.makeText(MainActivity.this, "Login Fialed", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }
+    }
+
+
     private boolean isFieldEmpty(EditText textField) {
 
         boolean emptyFields = true; // empty fields: YES
@@ -76,20 +94,13 @@ public class MainActivity extends AppCompatActivity {
         query.findInBackground(new FindCallback<ParseUser>() {
             @Override
             public void done(List<ParseUser> objects, ParseException e) {
-                if (objects.size() > 0 && e == null) {
+                if (e == null  && objects.size() > 0) {
                     userLogIn();
                 } else {
                     userSignUp();
                 }
             }
         });
-
-        try {
-            Intent intent = new Intent(getApplicationContext(), UserList.class);
-            startActivity(intent);
-        } catch (Exception ioe) {
-            ioe.printStackTrace();
-        }
     }
 
 
@@ -107,10 +118,15 @@ public class MainActivity extends AppCompatActivity {
                 public void done(ParseException e) {
                     if (e == null) {
                         Log.i("Info", "Sign up successful");
+
                         Toast.makeText(MainActivity.this, "Sign up successful!", Toast.LENGTH_SHORT).show();
+
                         signupSuccessful[0] = true;
+
                         sharedPreferences.edit().putString("username", getUsername().getText().toString());
+
                         user.put("follows", new JSONArray());
+
                         user.saveInBackground(new SaveCallback() {
                             @Override
                             public void done(ParseException e) {
@@ -121,7 +137,9 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             }
                         });
-                        // dispalyListOfUsers();
+
+                        redirect();
+
                     } else {
                         Log.i("Error", "Sing up unsuccessful!");
                         Toast.makeText(MainActivity.this, "Signup failed" + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -132,6 +150,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, "Username and password are required! Or you are alrady logged in!", Toast.LENGTH_SHORT).show();
         }
+
 
         return signupSuccessful[0];
     }
@@ -158,6 +177,7 @@ public class MainActivity extends AppCompatActivity {
             });
         }
 
+        redirect();
         return loginSuccessful[0];
     }
 

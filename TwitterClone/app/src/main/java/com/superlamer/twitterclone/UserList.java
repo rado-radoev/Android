@@ -81,8 +81,12 @@ public class UserList extends AppCompatActivity {
 
                 if (checkedTextView.isChecked()) {
                     Log.i("Info", "Row Checked");
+                    ParseUser.getCurrentUser().getList("follows").add(users.get(position));
+                    ParseUser.getCurrentUser().saveInBackground();
                 } else {
                     Log.i("Info", "Row is not checked");
+                    ParseUser.getCurrentUser().getList("follows").remove(users.get(position));
+                    ParseUser.getCurrentUser().saveInBackground();
                 }
 
             }
