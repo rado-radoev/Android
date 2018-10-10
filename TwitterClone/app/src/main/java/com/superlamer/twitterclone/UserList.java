@@ -3,10 +3,15 @@ package com.superlamer.twitterclone;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckedTextView;
 import android.widget.ListView;
 
 import com.parse.ParseUser;
@@ -56,17 +61,31 @@ public class UserList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_list);
 
+        users = new ArrayList<>();
+        users.add("Alex");
+        users.add("Emma");
+
         setTitle("User List");
 
         intent = getIntent();
-        try {
-            users = (ArrayList<String>) ObjectSerializer.deserialize(intent.getStringExtra("users"));
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
-
         userListView = (ListView) findViewById(R.id.usersListView);
-        arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, users);
+        userListView.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
+        userListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                CheckedTextView checkedTextView = (CheckedTextView) view;
+
+                if (checkedTextView.isChecked()) {
+                    Log.i("Info", "Row Checked");
+                } else {
+                    Log.i("Info", "Row is not checked");
+                }
+
+            }
+        });
+
+        arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_checked, users);
         userListView.setAdapter(arrayAdapter);
         arrayAdapter.notifyDataSetChanged();
     }

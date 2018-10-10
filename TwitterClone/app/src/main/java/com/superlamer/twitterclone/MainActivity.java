@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText password;
     private SharedPreferences sharedPreferences;
     Intent intent;
+    ArrayList<String> users = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,10 +85,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         try {
-            List<String> users = allUsers();
-//            Intent intent = new Intent(getApplicationContext(), UserList.class);
-//            intent.putExtra("users", ObjectSerializer.serialize(usrs));
-//            startActivity(intent);
+            Intent intent = new Intent(getApplicationContext(), UserList.class);
+            startActivity(intent);
         } catch (Exception ioe) {
             ioe.printStackTrace();
         }
@@ -162,12 +161,11 @@ public class MainActivity extends AppCompatActivity {
         return loginSuccessful[0];
     }
 
-    private List<String> allUsers() {
+//region Unused Code
+/*    private void allUsers() {
         ParseQuery<ParseUser> query = ParseUser.getQuery();
         query.whereNotEqualTo("username", ParseUser.getCurrentUser().getUsername());
 
-        final List<String> users = new ArrayList<>();
-        final JSONArray jsonArray = new JSONArray();
         query.findInBackground(new FindCallback<ParseUser>() {
 
             @Override
@@ -175,22 +173,18 @@ public class MainActivity extends AppCompatActivity {
                 Log.i("Info", "Inside findcallback");
                 if (e == null) {
                     Log.i("Info", "Not null");
+                    int i = 0;
                     for (ParseUser obj : objects) {
                         Log.i("Info", "Parsing: " + obj.getUsername());
-                        users.add(obj.getUsername());
-                        Log.i("Info", "added to users array");
+                        users.add(obj.getUsername().toString());
+                        Log.i("Info", "User in array: " + users.get(i));
+                        i++;
                     }
                 } else {
                     Log.i("Info", "Error occured: " + e.getMessage());
                 }
             }
         });
-
-        Log.i("Info", "array size is: " + users.size());
-        for (String usr : users) {
-            Log.i("Info", "Usernam: " + usr + " is in arraylist");
-        }
-        return users;
     }
 
 
@@ -233,10 +227,12 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+
         return  users;
     }
 
-
+*/
+//endregion
 
     public EditText getUsername() {
         return username;
