@@ -14,6 +14,9 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckedTextView;
 import android.widget.ListView;
 
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.superlamer.twitterclone.ObjectSerializer;
 import com.superlamer.twitterclone.R;
@@ -88,5 +91,25 @@ public class UserList extends AppCompatActivity {
         arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_checked, users);
         userListView.setAdapter(arrayAdapter);
         arrayAdapter.notifyDataSetChanged();
+
+
+        users.clear();
+
+        ParseQuery<ParseUser> query = ParseUser.getQuery();
+        query.whereNotEqualTo("username", ParseUser.getCurrentUser().getUsername());
+
+        query.findInBackground(new FindCallback<ParseUser>() {
+            @Override
+            public void done(List<ParseUser> objects, ParseException e) {
+                if (e == null && objects.size() > 0) {
+                    for (ParseUser user : objects) {
+                        users.add(user.getUsername());
+                    }
+
+                    arrayAdapter.notifyDataSetChanged();
+                }
+            }
+        });
+
     }
 }
