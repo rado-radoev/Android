@@ -1,6 +1,8 @@
 package com.superlamer.twitterclone;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,17 +14,23 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckedTextView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseRelation;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 import com.superlamer.twitterclone.ObjectSerializer;
 import com.superlamer.twitterclone.R;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -49,13 +57,16 @@ public class UserList extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case R.id.tweet:
-                // do something
+                addTweet();
                 break;
             case R.id.yourFeed:
-                // do something
+                getListOfTweets(ParseUser.getCurrentUser());
                 break;
             case R.id.logout:
-                // do something
+                ParseUser.logOut();
+
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
                 break;
         }
 
@@ -73,16 +84,69 @@ public class UserList extends AppCompatActivity {
         return tweetLengthInRnage;
     }
 
-    public void addTweet(String newTweet) {
-        int numberOfTweets = ParseUser.getCurrentUser().getList("tweets").size();
-        ParseUser.getCurrentUser().getList("tweets").add(++numberOfTweets, newTweet);
-        ParseUser.getCurrentUser().saveInBackground(new SaveCallback() {
+    public void addTweet() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Send a tweet");
+
+        final EditText tweetContentEditText = new EditText(this);
+
+        builder.setView(tweetContentEditText);
+        builder.setPositiveButton("send", new DialogInterface.OnClickListener() {
             @Override
-            public void done(ParseException e) {
-                if (e == null) {
-                    Toast.makeText(UserList.this, "Tweet posted!", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(UserList.this, "Tweet cannot be tweeted! Try again!", Toast.LENGTH_SHORT).show();
+            public void onClick(DialogInterface dialog, int which) {
+                Log.i("info", tweetContentEditText.getText().toString());
+
+                ParseUser.getCurrentUser().add("tweets", tweetContentEditText.getText().toString());
+
+                ParseUser.getCurrentUser().saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if (e == null) {
+                            Toast.makeText(UserList.this, "Tweet tweeted!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(UserList.this, "Tweet cannot be tweeted! Try again!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
+        });
+
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
+
+
+
+    }
+
+    public void getListOfTweets (ParseUser curentUser) {
+        // get all tweets for user
+        ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("User");
+        query.whereEqualTo("username", curentUser.getUsername());
+
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> objects, ParseException e) {
+                if (e == null && objects.size() > 0) {
+                    JSONArray jsonArray;
+                    for (int i = 0; i < objects.size(); i++) {
+                        jsonArray = objects.get(i).getJSONArray("tweets");
+
+                        for (int k = 0; k < jsonArray.length(); k++) {
+                            try {
+                                JSONObject jsonObject = jsonArray.getJSONObject(k);
+                            } catch (JSONException e1) {
+                                e1.printStackTrace();
+                            }
+                        }
+
+                    }
                 }
             }
         });
@@ -99,6 +163,18 @@ public class UserList extends AppCompatActivity {
 
         setTitle("User List");
 
+        if (ParseUser.getCurrentUser().get("follows") == null) {
+
+            List<String> emptyList = new ArrayList<String>();
+            ParseUser.getCurrentUser().put("follows", emptyList);
+        }
+
+        if (ParseUser.getCurrentUser().get("tweets") == null) {
+
+            List<String> emptyList = new ArrayList<String>();
+            ParseUser.getCurrentUser().put("tweets", emptyList);
+        }
+
         intent = getIntent();
         userListView = (ListView) findViewById(R.id.usersListView);
         userListView.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
@@ -110,11 +186,32 @@ public class UserList extends AppCompatActivity {
 
                 if (checkedTextView.isChecked()) {
                     Log.i("Info", "Row Checked");
-                    ParseUser.getCurrentUser().getList("follows").add(users.get(position));
-                    ParseUser.getCurrentUser().saveInBackground();
+
+                    List<String> usernames = new ArrayList<>();
+
+                    try {
+                        usernames = ParseUser.getCurrentUser().getList("follows");
+                    } catch (NullPointerException npe) {
+                        npe.printStackTrace();
+                    }
+
+
+                    if (!usernames.contains(users.get(position))) {
+                        ParseUser.getCurrentUser().add("follows", users.get(position));
+                        ParseUser.getCurrentUser().saveInBackground();
+                    }
+
+
+
+
                 } else {
                     Log.i("Info", "Row is not checked");
+
                     ParseUser.getCurrentUser().getList("follows").remove(users.get(position));
+                    List newlist = ParseUser.getCurrentUser().getList("follows");
+                    ParseUser.getCurrentUser().remove("follows");
+                    ParseUser.getCurrentUser().put("follows", newlist);
+
                     ParseUser.getCurrentUser().saveInBackground();
                 }
 
@@ -140,6 +237,12 @@ public class UserList extends AppCompatActivity {
                     }
 
                     arrayAdapter.notifyDataSetChanged();
+
+                    for (String username : users) {
+                        if (ParseUser.getCurrentUser().getList("follows").contains(username)) {
+                            userListView.setItemChecked(users.indexOf(username), true);
+                        }
+                    }
                 }
             }
         });
