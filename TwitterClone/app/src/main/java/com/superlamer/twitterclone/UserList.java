@@ -60,7 +60,8 @@ public class UserList extends AppCompatActivity {
                 addTweet();
                 break;
             case R.id.yourFeed:
-                getListOfTweets(ParseUser.getCurrentUser());
+                Intent inte = new Intent(this, Feed.class);
+                startActivity(inte);
                 break;
             case R.id.logout:
                 ParseUser.logOut();
@@ -97,16 +98,26 @@ public class UserList extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 Log.i("info", tweetContentEditText.getText().toString());
 
-                ParseUser.getCurrentUser().add("tweets", tweetContentEditText.getText().toString());
+                ParseObject tweet = new ParseObject("Tweet");
 
-                ParseUser.getCurrentUser().saveInBackground(new SaveCallback() {
+                tweet.put("username", ParseUser.getCurrentUser().getUsername());
+
+                tweet.put("tweet", tweetContentEditText.getText().toString());
+
+                tweet.saveInBackground(new SaveCallback() {
                     @Override
                     public void done(ParseException e) {
+
                         if (e == null) {
-                            Toast.makeText(UserList.this, "Tweet tweeted!", Toast.LENGTH_SHORT).show();
+
+                            Toast.makeText(UserList.this, "Tweet sent succesfully!", Toast.LENGTH_SHORT).show();
+
                         } else {
-                            Toast.makeText(UserList.this, "Tweet cannot be tweeted! Try again!", Toast.LENGTH_SHORT).show();
+
+                            Toast.makeText(UserList.this, "Tweet failed - please try again later.", Toast.LENGTH_SHORT).show();
+
                         }
+
                     }
                 });
             }
