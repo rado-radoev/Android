@@ -16,6 +16,7 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,6 +31,62 @@ public class UserList extends AppCompatActivity {
     private ListView usersListView;
     private String senderUserName;
     private String receiverUserName;
+    private String conversationId;
+
+
+    public String getConversationId() {
+        return conversationId;
+    }
+
+    public void setConversationId(String conversationId) {
+        this.conversationId = conversationId;
+    }
+
+
+    public void sendMessage(View view) {
+        // iF there is a conversation between the two users get the ID and display all messages
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Conversation");
+        query.whereEqualTo("Receiver", receiverUserName);
+        query.whereEqualTo("Sender", senderUserName);
+        query.orderByDescending("createdAt");
+        query.setLimit(1);
+
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> objects, ParseException e) {
+                if (e == null && objects.size() > 0) {
+                    setConversationId(objects.get(0).getString("objectId"));
+                } else {
+                    ParseObject newConvo = new ParseObject("Conversation");
+                    newConvo.put("Sender", senderUserName);
+                    newConvo.put("Receiver", receiverUserName);
+                    newConvo.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if (e != null) {
+                                Toast.makeText(UserList.this, "New conversation could not be created!", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+
+                    ParseObject newMessage = new ParseObject("Messages");
+                    newMessage.put("ConversationId", newConvo.getObjectId());
+                    newMessage.put("Sender", senderUserName);
+                    newMessage.put("Receiver", receiverUserName);
+                    newMessage.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if (e == null) {
+                                Log.i("NewMessage", "Saved");
+                            } else {
+                                Log.i("NewMessage", "Not saved");
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,15 +105,6 @@ public class UserList extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 receiverUserName = userList.get(position);
                 Log.i("Receiver username", receiverUserName);
-                ParseObject newMessage = new ParseObject("Messages");
-
-                // iF there is a conversation between the two users get the ID and display all messages
-                ParseQuery<ParseObject> query = ParseQuery.getQuery("Conversation");
-                List<String> chatParticipants = new ArrayList<>();
-                chatParticipants.add(senderUserName);
-                chatParticipants.add(receiverUserName);
-                query.whereContainsAll()
-                // else create new conversation ID and fill in the Messages db
             }
         });
 
