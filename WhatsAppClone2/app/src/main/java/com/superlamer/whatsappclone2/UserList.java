@@ -51,6 +51,11 @@ public class UserList extends AppCompatActivity {
                 ParseObject newMessage = new ParseObject("Messages");
 
                 // iF there is a conversation between the two users get the ID and display all messages
+                ParseQuery<ParseObject> query = ParseQuery.getQuery("Conversation");
+                List<String> chatParticipants = new ArrayList<>();
+                chatParticipants.add(senderUserName);
+                chatParticipants.add(receiverUserName);
+                query.whereContainsAll()
                 // else create new conversation ID and fill in the Messages db
             }
         });
