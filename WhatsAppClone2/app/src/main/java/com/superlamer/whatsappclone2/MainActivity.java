@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.parse.LogInCallback;
+import com.parse.LogOutCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
@@ -49,6 +50,22 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void logout(View view) {
+        if (ParseUser.getCurrentUser() != null) {
+            ParseUser.logOutInBackground(new LogOutCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if (e == null) {
+                        Toast.makeText(MainActivity.this, "Logout successful", Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        Toast.makeText(MainActivity.this, "Logout failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }
+    }
+
 
     public boolean isEmpty(EditText textField) {
 
@@ -75,7 +92,12 @@ public class MainActivity extends AppCompatActivity {
                         redirect();
                     }
                     else {
-                        Toast.makeText(MainActivity.this, "Signup Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        if (e.getMessage().contains("already exists")) {
+                            login();
+                        }
+                        else{
+                            Toast.makeText(MainActivity.this, "Signup Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }
             });
@@ -84,19 +106,17 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void login() {
-        if (ParseUser.getCurrentUser() != null) {
-            ParseUser.logInInBackground(usernameText.getText().toString(), passwordText.getText().toString(), new LogInCallback() {
-                @Override
-                public void done(ParseUser user, ParseException e) {
-                    if (e == null) {
-                        Toast.makeText(MainActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
-                        redirect();
-                    } else {
-                        Toast.makeText(MainActivity.this, "Login Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
+        ParseUser.logInInBackground(usernameText.getText().toString(), passwordText.getText().toString(), new LogInCallback() {
+            @Override
+            public void done(ParseUser user, ParseException e) {
+                if (e == null) {
+                    Toast.makeText(MainActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
+                    redirect();
+                } else {
+                    Toast.makeText(MainActivity.this, "Login Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
-            });
-        }
+            }
+        });
     }
 
     public void redirect() {
