@@ -1,5 +1,6 @@
 package com.superlamer.whatsappclone2;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,6 +9,7 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckedTextView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -20,26 +22,31 @@ import com.parse.SaveCallback;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.security.auth.login.LoginException;
 
 public class UserList extends AppCompatActivity {
 
-    private ArrayList<String> userList;
-    private ArrayAdapter usersArrayAdapter;
-    private ListView usersListView;
-    private String senderUserName;
-    private String receiverUserName;
-    private String conversationId;
+    ArrayList<String> userList;
+    ArrayAdapter usersArrayAdapter;
+    ListView usersListView;
+    String senderUserName;
+    String receiverUserName;
+    EditText chatText;
+    String messageId;
+    Intent intent;
 
+    private final String[] conversationId = new String[1];
 
-    public String getConversationId() {
-        return conversationId;
+    private final void setConversationId(String conversationId) {
+        this.conversationId[0] = conversationId;
     }
 
-    public void setConversationId(String conversationId) {
-        this.conversationId = conversationId;
+    public final String[] getConversationId() {
+        return conversationId;
     }
 
 
@@ -54,10 +61,13 @@ public class UserList extends AppCompatActivity {
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> objects, ParseException e) {
-                if (e == null && objects.size() > 0) {
-                    setConversationId(objects.get(0).getString("objectId"));
+                 if (e == null && objects.size() > 0) {
+                    setConversationId(objects.get(0).getObjectId());
+                    Log.i("Conversation id", getConversationId()[0]);
                 } else {
-                    ParseObject newConvo = new ParseObject("Conversation");
+                    System.out.println("Could not get conversation id. New conversation started");
+                    final ParseObject newConvo = new ParseObject("Conversation");
+                    System.out.println("objId = " + newConvo.getObjectId());
                     newConvo.put("Sender", senderUserName);
                     newConvo.put("Receiver", receiverUserName);
                     newConvo.saveInBackground(new SaveCallback() {
@@ -65,27 +75,48 @@ public class UserList extends AppCompatActivity {
                         public void done(ParseException e) {
                             if (e != null) {
                                 Toast.makeText(UserList.this, "New conversation could not be created!", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
-
-                    ParseObject newMessage = new ParseObject("Messages");
-                    newMessage.put("ConversationId", newConvo.getObjectId());
-                    newMessage.put("Sender", senderUserName);
-                    newMessage.put("Receiver", receiverUserName);
-                    newMessage.saveInBackground(new SaveCallback() {
-                        @Override
-                        public void done(ParseException e) {
-                            if (e == null) {
-                                Log.i("NewMessage", "Saved");
                             } else {
-                                Log.i("NewMessage", "Not saved");
+                                setConversationId(newConvo.getObjectId());
+
+                                System.out.println("Starting new conversation");
+
+                                setConversationId(newConvo.getObjectId());
+
+                                final ParseObject newMessage = new ParseObject("Messages");
+                                newMessage.put("conversationId", getConversationId()[0]);
+                                System.out.println("Object ID: " + getConversationId()[0]);
+                                intent.putExtra("conversationId", getConversationId()[0]);
+
+                                newMessage.put("Sender", senderUserName);
+                                System.out.println("Sender: " + senderUserName);
+                                newMessage.put("Receiver", receiverUserName);
+                                System.out.println("Receiver: " + receiverUserName);
+                                Map<String, String> sentMsg = new HashMap<String, String>();
+                                sentMsg.put("username", senderUserName);
+                                sentMsg.put("message", chatText.getText().toString());
+                                newMessage.add("Messages", sentMsg);
+                                newMessage.saveInBackground(new SaveCallback() {
+                                    @Override
+                                    public void done(ParseException e) {
+                                        if (e == null) {
+                                            messageId = newMessage.getObjectId();
+                                        }
+                                    }
+                                });
                             }
                         }
                     });
                 }
             }
         });
+
+        if (getConversationId()[0] != null) {
+
+            intent.putExtra("conversationId", getConversationId()[0]);
+            intent.putExtra("sender", senderUserName);
+            intent.putExtra("receiver", receiverUserName);
+            startActivity(intent);
+        }
     }
 
     @Override
@@ -94,6 +125,10 @@ public class UserList extends AppCompatActivity {
         setContentView(R.layout.activity_user_list);
 
         setTitle("User Chat list");
+
+        intent = new Intent(this, ChatActivity.class);
+
+        chatText = (EditText) findViewById(R.id.chatText);
 
         senderUserName = ParseUser.getCurrentUser().getUsername();
         Log.i("Sender username", senderUserName);
