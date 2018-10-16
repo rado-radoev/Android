@@ -27,11 +27,11 @@ public class ChatActivity extends AppCompatActivity {
     String conversationId;
     int layoutPosition = 0; // 0 == left, 1 == right
     Intent intent = getIntent();
-
+    final ListView chatListView = (ListView) findViewById(R.id.chatListView);
 
     public void sendMessage(View view) {
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Messages");
-        query.whereEqualTo("conversationId", intent.getStringExtra("conversationId"));
+        query.whereEqualTo("conversationId", conversationId);
 
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
@@ -51,7 +51,7 @@ public class ChatActivity extends AppCompatActivity {
                             @Override
                             public void done(ParseException e) {
                                 if ( e == null) {
-
+                                    updateView();
                                 } else {
                                     e.printStackTrace();
                                 }
@@ -63,21 +63,9 @@ public class ChatActivity extends AppCompatActivity {
                 }
             }
         });
-
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_chat);
-
-        conversationId = intent.getStringExtra("conversationId");
-
-        chatText = (EditText) findViewById(R.id.chatText);
-
-        final ListView chatListView = (ListView) findViewById(R.id.chatListView);
-
-
+    public void updateView() {
         List<Map<String, String>> messageData = new ArrayList<Map<String, String>>();
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Messages");
@@ -108,5 +96,17 @@ public class ChatActivity extends AppCompatActivity {
 
         SimpleAdapter simpleAdapter = new SimpleAdapter(this, messageData, android.R.layout.simple_expandable_list_item_2,
                 new String[] {"message", "username"}, new int[] {android.R.id.text1, android.R.id.text2});
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_chat);
+
+        conversationId = intent.getStringExtra("conversationId");
+
+        chatText = (EditText) findViewById(R.id.chatText);
+
+        updateView();
     }
 }
